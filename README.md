@@ -1,4 +1,5 @@
 # 懒猫书签清理 - 你的书签整理助手 🐱
+项目网站：https://www.ainewtab.app/LazyCat-Bookmark-Cleaner/zh-cn/
 
 让书签管理变得轻松愉快！一只可爱的懒猫助手，帮你智能清理和整理浏览器书签。
 
