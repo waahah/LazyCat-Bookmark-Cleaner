@@ -96,10 +96,14 @@ function showNicknameModal(isFirstTime = true) {  // 添加参数标识是否首
             await setNickname(nickname);
             // 更新标题
             updateProfileTitle(nickname);
+            // 关闭模态框
+            modalOverlay.style.display = 'none';
+            // 如果是首次设置，初始化书签画像
             if (isFirstTime) {
                 await initBookmarkProfile();
+                // 添加编辑昵称功能
+                addEditNicknameFeature();
             }
-            modalOverlay.style.display = 'none';
         } catch (error) {
             console.error('Error saving nickname:', error);
             alert(getMessage('nicknameError'));

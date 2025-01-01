@@ -170,8 +170,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         const localizedText = chrome.i18n.getMessage(message);
         if (localizedText) {
             element.textContent = localizedText;
-        } else {
-            console.warn(`Missing translation for: ${message}`);
         }
     });
 
@@ -205,7 +203,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             totalBookmarksEl.textContent = totalBookmarks;
         }
     } catch (error) {
-        console.error('Error initializing bookmarks:', error);
         if (scannedBookmarksEl && totalBookmarksEl) {
             scannedBookmarksEl.textContent = '-';
             totalBookmarksEl.textContent = '-';
@@ -313,7 +310,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
             
         } catch (error) {
-            console.error('Error during scan:', error);
             if (!scanCancelled) {  // 只在非取消状态下显示错误
                 const invalidList = document.getElementById('invalidList');
                 if (invalidList) {
@@ -470,15 +466,12 @@ async function scanBookmarks(node, path = [], counter = { count: 0, total: 0, sh
                         }, result.reason);
                     }
                 } catch (error) {
-                    console.error('Error checking URL:', error);
                 }
             }
         }
     } catch (error) {
         if (error.message === 'Scan cancelled') {
-            console.log('Scanning cancelled by user');
         } else {
-            console.error('Error scanning bookmarks:', error);
             handleError(error);
         }
     }
@@ -518,7 +511,6 @@ async function checkBookmarksInBatch(bookmarks, counter, batchSize = CONFIG.batc
                 
                 return { bookmark, ...result };
             } catch (error) {
-                console.error('Error checking bookmark:', bookmark.url, error);
                 return { 
                     bookmark, 
                     isValid: false, 
@@ -533,7 +525,6 @@ async function checkBookmarksInBatch(bookmarks, counter, batchSize = CONFIG.batc
     
     // 等待并处理重试结果
     if (retryBookmarks.size > 0) {
-        console.log(`Waiting for ${retryBookmarks.size} retries to complete...`);
         await new Promise(resolve => setTimeout(resolve, 3000)); // 给重试充足时间
         
         // 检查重试结果
@@ -733,10 +724,6 @@ function displayResults() {
     const invalidList = document.getElementById('invalidList');
     if (!invalidList) return;
     
-    // 添加调试日志
-    console.log('Display Results - Invalid Bookmarks:', invalidBookmarks.length);
-    console.log('Display Results - Empty Folders:', emptyFolders.length);
-    
     // 清空现有列表
     invalidList.innerHTML = '';
     
@@ -762,17 +749,12 @@ function displayResults() {
         }))
     ];
 
-    // 添加调试日志
-    console.log('Combined items count:', allItems.length);
-
     // 显示所有项目
     allItems.forEach(item => {
         if (item.type === 'bookmark') {
             addInvalidBookmark(item.data);
         } else {
             addEmptyFolder(item.data);
-            // 添加调试日志
-            console.log('Adding empty folder to display:', item.data.title);
         }
     });
     
@@ -787,8 +769,6 @@ function addEmptyFolder(folder) {
         console.error('Invalid list container not found');
         return;
     }
-
-    console.log('Adding empty folder:', folder); // 调试日志
 
     const item = document.createElement('div');
     item.className = 'result-item';
@@ -1129,7 +1109,6 @@ function handleError(error) {
             </div>
         `;
     }
-    console.error('Error:', error);
 }
 
 // 添加禁用批量操作的函数

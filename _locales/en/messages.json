@@ -9,7 +9,7 @@
     "message": "Total Bookmarks"
   },
   "invalidLinks": {
-    "message": "Invalid Links"
+    "message": "Links to Check"
   },
   "emptyFolders": {
     "message": "Empty Folders"
@@ -542,5 +542,23 @@
   },
   "brandName": {
     "message": "Lazy Cat Bookmark Cleaner"
+  },
+  "setTimeoutTitle": {
+    "message": "Set Timeout"
+  },
+  "timeoutLabel": {
+    "message": "Select timeout duration for each link check (seconds):"
+  },
+  "timeoutExplanation": {
+    "message": "Timeout determines the maximum waiting time when checking each link. Longer timeouts provide more thorough checks but increase overall scanning time; shorter timeouts speed up scanning but may misjudge slow-loading sites."
+  },
+  "timeoutTip1": {
+    "message": "• Recommended: 10-15 seconds"
+  },
+  "timeoutTip2": {
+    "message": "• Set longer times for poor network conditions"
+  },
+  "timeoutTip3": {
+    "message": "• Can be shortened when checking many links"
   }
 }

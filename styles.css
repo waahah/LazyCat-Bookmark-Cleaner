@@ -2035,3 +2035,148 @@ h1 {
 .domain-list li:last-child {
     border-bottom: none;
 }
+/* 对话框遮罩层 */
+.dialog-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(5px);
+}
+
+/* 对话框容器 */
+.dialog {
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 20px;
+    padding: 24px;
+    width: 90%;
+    max-width: 460px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(20px);
+}
+
+/* 对话框标题 */
+.dialog h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #1d1d1f;
+}
+
+/* 设置项容器 */
+.setting-item {
+    margin: 24px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* 滑块样式 */
+input[type="range"] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 4px;
+    border-radius: 2px;
+    background: #e5e5ea;
+    outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--system-blue);
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* 按钮容器 */
+.dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+/* 按钮基础样式 */
+.dialog-actions button {
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+}
+
+
+
+.secondary-button:hover {
+    background: #10b981;
+}
+
+/* 确认按钮 */
+.dialog-actions button:not(.secondary-button) {
+    background: var(--system-blue);
+    color: white;
+}
+
+.dialog-actions button:not(.secondary-button):hover {
+    background: #0071e3;
+    transform: translateY(-1px);
+}
+
+/* 超时时间显示 */
+.timeout-display {
+    text-align: center;
+    font-size: 32px;
+    font-weight: 600;
+    color: #1d1d1f;
+    margin: 16px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.timeout-unit {
+    font-size: 16px;
+    color: #86868b;
+    margin-left: 4px;
+}
+/* 超时说明文字样式 */
+.timeout-explanation {
+    margin: 16px 0;
+    color: var(--system-gray);
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.timeout-explanation p {
+    margin-bottom: 12px;
+}
+
+.timeout-tips {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    color: var(--system-gray);
+}
+
+.timeout-tips li {
+    margin: 6px 0;
+}

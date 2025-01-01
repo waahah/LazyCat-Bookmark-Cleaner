@@ -9,7 +9,7 @@
     "message": "书签总数"
   },
   "invalidLinks": {
-    "message": "无效链接"
+    "message": "待确认链接"
   },
   "emptyFolders": {
     "message": "空文件夹"
@@ -287,7 +287,7 @@
     "message": "访问此书签时服务器返回 HTTP 错误"
   },
   "errorExplanation_invalidProtocol": {
-    "message": "URL 使用了不支持或���效的协议"
+    "message": "URL 使用了不支持或效的协议"
   },
   "errorType_badRequest": {
     "message": "请求无效 (400)"
@@ -502,6 +502,24 @@
   "andMore": {
     "message": "还有 $1 个域名...",
     "description": "Text showing how many more domains exist"
+  },
+  "setTimeoutTitle": {
+    "message": "设置超时时间"
+  },
+  "timeoutLabel": {
+    "message": "请选择每个链接的检查超时时间（秒）："
+  },
+  "timeoutExplanation": {
+    "message": "超时时间决定了检查每个链接时的最长等待时间。时间越长，检查越充分，但整体扫描时间会更久；时间越短，扫描越快，但可能会误判部分加载较慢的网站。"
+  },
+  "timeoutTip1": {
+    "message": "• 建议值：10-15 秒"
+  },
+  "timeoutTip2": {
+    "message": "• 网络较差时建议设置更长时间"
+  },
+  "timeoutTip3": {
+    "message": "• 链接较多时可以适当缩短时间"
   }
 }
 

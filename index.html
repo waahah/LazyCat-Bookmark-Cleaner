@@ -105,6 +105,24 @@
             </div>
             <iframe id="preview-frame" class="preview-frame"></iframe>
         </div>
+
+        <div id="timeout-dialog" class="dialog-overlay" style="display: none;">
+            <div class="dialog">
+                <h3 data-i18n="setTimeoutTitle">设置超时时间</h3>
+                <div class="setting-item">
+                    <label data-i18n="timeoutLabel">请选择每个链接的检查超时时间（秒）：</label>
+                    <input type="range" id="timeout-value" min="5" max="30" value="10" step="1">
+                    <div class="timeout-display">
+                        <span id="timeout-display">10</span>
+                        <span class="timeout-unit">s</span>
+                    </div>
+                </div>
+                <div class="dialog-actions">
+                    <button id="cancel-timeout" class="secondary-button" data-i18n="cancel">取消</button>
+                    <button id="confirm-timeout" data-i18n="confirm">确认</button>
+                </div>
+            </div>
+        </div>
     </div>
     <script type="module" src="index.js"></script>
     <script src="preview.js"></script>

@@ -1,3 +1,23 @@
+// 配置常量
+const CONFIG = {
+  TIMEOUT: {
+    DEFAULT: 15000,    // 默认超时时间 15 秒
+    MIN: 5000,         // 最小超时时间 5 秒
+    MAX: 30000         // 最大超时时间 30 秒
+  }
+};
+
+// 添加 onInstalled 事件监听器
+chrome.runtime.onInstalled.addListener((details) => {
+  // 仅在首次安装时打开页面
+  if (details.reason === 'install') {
+    chrome.tabs.create({
+      url: 'index.html'
+    });
+  }
+});
+
+// 保留原有的 action 点击事件
 chrome.action.onClicked.addListener((tab) => {
   chrome.tabs.create({
     url: 'index.html'
@@ -25,91 +45,20 @@ async function checkUrl(url) {
     }
 }
 
-// 添加网络状况检测和超时管理
-class NetworkTimeoutManager {
-    constructor() {
-        this.baseTimeout = 6000; // 基础超时时间 6 秒
-        this.maxTimeout = 12000; // 最大超时时间 12 秒
-        this.minTimeout = 4000;  // 最小超时时间 4 秒
-        this.networkSamples = []; // 存储最近的网络响应时间样本
-        this.maxSamples = 10;    // 保留最近 10 个样本
-    }
-
-    // 获取当前网络状况下的超时时间
-    getTimeout() {
-        if (this.networkSamples.length === 0) {
-            return this.baseTimeout;
-        }
-
-        // 计算最近样本的平均响应时间
-        const avgResponseTime = this.calculateAverageResponseTime();
-        // 使用平均响应时间的 2.5 倍作为超时时间
-        let timeout = avgResponseTime * 2.5;
-
-        // 确保超时时间在合理范围内
-        timeout = Math.max(this.minTimeout, Math.min(timeout, this.maxTimeout));
-        
-        console.log(`🕒 Dynamic timeout set to ${timeout}ms (avg response: ${avgResponseTime}ms)`);
-        return timeout;
-    }
-
-    // 添加新的响应时间样本
-    addSample(responseTime) {
-        this.networkSamples.push(responseTime);
-        if (this.networkSamples.length > this.maxSamples) {
-            this.networkSamples.shift(); // 移除最老的样本
-        }
-        console.log(`📊 Network samples updated: ${this.networkSamples.join(', ')}ms`);
-    }
-
-    // 计算平均响应时间
-    calculateAverageResponseTime() {
-        if (this.networkSamples.length === 0) return this.baseTimeout;
-        
-        // 移除异常值（超过平均值两个标准差的样本）
-        const samples = this.removeOutliers(this.networkSamples);
-        const avg = samples.reduce((a, b) => a + b, 0) / samples.length;
-        
-        console.log(`📈 Average response time: ${avg}ms (from ${samples.length} samples)`);
-        return avg;
-    }
-
-    // 移除异常值
-    removeOutliers(samples) {
-        if (samples.length < 4) return samples; // 样本太少不处理
-
-        const avg = samples.reduce((a, b) => a + b, 0) / samples.length;
-        const std = Math.sqrt(
-            samples.reduce((sq, n) => sq + Math.pow(n - avg, 2), 0) / samples.length
-        );
-        
-        return samples.filter(s => Math.abs(s - avg) <= 2 * std);
-    }
-
-    // 重置样本数据
-    reset() {
-        this.networkSamples = [];
-    }
-}
-
-// 创建超时管理器实例
-const timeoutManager = new NetworkTimeoutManager();
-
 async function checkUrlOnce(url) {
   const startTime = Date.now();
-  console.group(`🔍 Checking URL: ${url}`);
-  console.log(`⏱️ Start Time: ${new Date(startTime).toLocaleTimeString()}`);
-  
-  const specialProtocols = [
-    'chrome:', 'chrome-extension:', 'edge:', 'about:', 
-    'file:', 'data:', 'javascript:', 'brave:'
-  ];
-
   try {
+    console.group(`🔍 Checking URL: ${url}`);  // 开始日志组
+    console.log(`⏱️ Start Time: ${new Date(startTime).toLocaleTimeString()}`);
+    
+    const specialProtocols = [
+      'chrome:', 'chrome-extension:', 'edge:', 'about:', 
+      'file:', 'data:', 'javascript:', 'brave:'
+    ];
+
     const urlObj = new URL(url);
     if (specialProtocols.some(protocol => url.startsWith(protocol))) {
       console.log(`🔒 Special protocol detected: ${urlObj.protocol}`);
-      console.groupEnd();
       return {
         isValid: true,
         reason: 'Special protocol URL'
@@ -178,7 +127,9 @@ async function checkUrlOnce(url) {
         const accessErrors = [
           'net::ERR_NETWORK_ACCESS_DENIED',
           'net::ERR_BLOCKED_BY_RESPONSE',
-          'net::ERR_BLOCKED_BY_CLIENT'
+          'net::ERR_BLOCKED_BY_CLIENT',
+          'net::ERR_ABORTED',
+          'net::ERR_FAILED'
         ];
 
         const certErrors = [
@@ -234,7 +185,6 @@ async function checkUrlOnce(url) {
       const listener = (details) => {
         if (isResolved) return;
         hasResponse = true;
-        recordResponseTime(); // 记录响应时间
         requestLog.statusCode = details.statusCode;
         console.log(`✅ Response received: Status ${details.statusCode}`);
         
@@ -320,32 +270,30 @@ async function checkUrlOnce(url) {
       const timeout = setTimeout(() => {
         if (!isResolved) {
           const timeElapsed = Date.now() - startTime;
-          console.warn(`⚠️ Request timeout after ${timeElapsed}ms`);
-          console.log(`Response received: ${hasResponse}`);
+          console.group('⚠️ Timeout Detection:');
+          console.log(`Time elapsed: ${timeElapsed}ms`);
+          console.log(`Has any response: ${hasResponse}`);
           
           if (!hasResponse) {
+            console.log('❌ Request timed out with no response');
             controller.abort();
             removeListeners();
+            logRequestResult();
             resolve({
               isValid: false,
               reason: 'Request Timeout'
             });
           } else {
+            console.log('⚠️ Request timed out but had partial response');
+            logRequestResult();
             resolveResult({
               isValid: true,
               reason: 'Site is responding but slow'
             });
           }
+          console.groupEnd();
         }
-      }, timeoutManager.getTimeout());
-
-      // 在成功接收响应时记录响应时间
-      const recordResponseTime = () => {
-        if (!isResolved) {
-          const responseTime = Date.now() - startTime;
-          timeoutManager.addSample(responseTime);
-        }
-      };
+      }, CONFIG.TIMEOUT.DEFAULT);  // 使用配置的超时时间
 
       fetch(url, {
         method: 'GET',
@@ -355,23 +303,38 @@ async function checkUrlOnce(url) {
         },
         mode: 'no-cors',
         cache: 'no-cache'
-      }).catch((error) => {
-        console.log(`🔄 Fetch error:`, error);
-        requestLog.errors.push({
-          type: 'fetch',
-          error: error.message,
-          timestamp: Date.now(),
-          timeTaken: Date.now() - startTime
+      }).then(response => {
+        console.log('📥 Fetch response received:', {
+          status: response.status,
+          type: response.type,
+          url: response.url
         });
+        hasResponse = true;
+      }).catch((error) => {
+        console.log('❌ Fetch error:', {
+          name: error.name,
+          message: error.message,
+          type: error.type
+        });
+        
+        // 对于 CORS 和一些常见的访问限制，认为网站是有效的
+        if (error.name === 'TypeError' && error.message === 'Failed to fetch') {
+          resolveResult({
+            isValid: true,
+            reason: 'Site blocks automated access but might be accessible in browser'
+          });
+        }
+        // 其他错误继续等待 chrome.webRequest 的结果
       });
     });
   } catch (error) {
     console.error(`❌ URL parsing error:`, error);
-    console.groupEnd();
     return {
       isValid: false,
       reason: 'Invalid URL format'
     };
+  } finally {
+    console.groupEnd();  // 确保日志组总是被关闭
   }
 }
 
@@ -385,47 +348,26 @@ function getStatusCodeReason(code) {
 }
 
 function handleStatusCode(statusCode, url) {
-  // 2xx: 成功
-  if (statusCode >= 200 && statusCode < 300) {
-    return { isValid: true };
-  }
-  
-  // 3xx: 重定向
-  if (statusCode >= 300 && statusCode < 400) {
-    return { 
-      isValid: true,
-      reason: 'Redirect response'
-    };
-  }
-  
-  // 4xx: 客户端错误
-  if (statusCode >= 400 && statusCode < 500) {
-    // 特殊处理某些 4xx 状态码
-    if ([401, 403, 429].includes(statusCode)) {
-      return { 
-        isValid: true,
-        reason: getStatusCodeReason(statusCode)
-      };
+    // 2xx 和 3xx 都认为是有效的
+    if (statusCode >= 200 && statusCode < 400) {
+        return { isValid: true };
     }
-    if (statusCode === 404) {
-      return {
-        isValid: false,
-        reason: 'Page not found'
-      };
+    
+    // 4xx 中的一些状态码也可能是正常的
+    if ([401, 403, 429, 405, 406, 407, 408].includes(statusCode)) {
+        return { 
+            isValid: true,
+            reason: getStatusCodeReason(statusCode)
+        };
     }
-    return {
-      isValid: false,
-      reason: `Client error: ${statusCode}`
-    };
-  }
-  
-  // 5xx: 服务器错误
-  if (statusCode >= 500) {
-    return {
-      isValid: true,
-      reason: 'Server temporarily unavailable'
-    };
-  }
+    
+    // 5xx 服务器错误可能是临时的
+    if (statusCode >= 500) {
+        return {
+            isValid: true,
+            reason: 'Server temporarily unavailable'
+        };
+    }
 }
 
 // 清理 URL 的辅助函数
@@ -478,41 +420,4 @@ function isSPAUrl(url) {
   } catch (e) {
     return false;
   }
-}
-
-// 添加重试机制
-async function checkUrlWithRetry(url, maxRetries = 2) {
-  let lastError;
-  
-  for (let i = 0; i < maxRetries; i++) {
-    try {
-      if (i > 0) {
-        console.log(`[Retry ${i}] Checking ${url}`);
-        await new Promise(resolve => setTimeout(resolve, 2000 * i));
-      }
-      
-      const result = await checkUrlOnce(url);
-      if (result.isValid || !isRetryableError(result.reason)) {
-        return result;
-      }
-      lastError = result;
-    } catch (error) {
-      lastError = { isValid: false, reason: error.message };
-    }
-  }
-  
-  return lastError;
-}
-
-function isRetryableError(error) {
-  const retryableErrors = [
-    'net::ERR_SOCKET_NOT_CONNECTED',
-    'net::ERR_CONNECTION_RESET',
-    'net::ERR_NETWORK_CHANGED',
-    'net::ERR_CONNECTION_REFUSED',
-    'net::ERR_CONNECTION_TIMED_OUT',
-    'net::ERR_NETWORK_IO_SUSPENDED',
-    'Request Timeout'
-  ];
-  return retryableErrors.some(e => error?.includes(e));
 }
