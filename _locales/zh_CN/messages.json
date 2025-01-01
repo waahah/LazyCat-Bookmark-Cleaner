@@ -507,7 +507,7 @@
     "message": "设置超时时间"
   },
   "timeoutLabel": {
-    "message": "请选择每个链接的检查超时时间（秒）："
+    "message": "请设置每个链接的检查超时时间（秒）："
   },
   "timeoutExplanation": {
     "message": "超时时间决定了检查每个链接时的最长等待时间。时间越长，检查越充分，但整体扫描时间会更久；时间越短，扫描越快，但可能会误判部分加载较慢的网站。"
@@ -520,6 +520,12 @@
   },
   "timeoutTip3": {
     "message": "• 链接较多时可以适当缩短时间"
+  },
+  "scanSettings": {
+    "message": "扫描设置"
+  },
+  "cannotChangeSettingsDuringScan": {
+    "message": "扫描过程中无法修改设置"
   }
 }
 

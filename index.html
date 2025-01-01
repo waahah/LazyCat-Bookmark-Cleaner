@@ -73,6 +73,9 @@
                     <button id="scan-button" class="scan-button">
                         <span class="button-text">Scan Bookmarks</span>
                     </button>
+                    <button id="settings-button" class="settings-button">
+                        <span data-i18n="scanSettings">扫描设置</span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -106,17 +109,39 @@
             <iframe id="preview-frame" class="preview-frame"></iframe>
         </div>
 
-        <div id="timeout-dialog" class="dialog-overlay" style="display: none;">
+        <div id="timeout-dialog" class="dialog-overlay">
             <div class="dialog">
                 <h3 data-i18n="setTimeoutTitle">设置超时时间</h3>
+                
                 <div class="setting-item">
-                    <label data-i18n="timeoutLabel">请选择每个链接的检查超时时间（秒）：</label>
-                    <input type="range" id="timeout-value" min="5" max="30" value="10" step="1">
+                    <label for="timeout-value" data-i18n="timeoutLabel" class="setting-label">
+                        请选择每个链接的检查超时时间（秒）：
+                    </label>
+                                        
+                    <input type="range" 
+                           id="timeout-value" 
+                           min="5" 
+                           max="30" 
+                           value="10"
+                           step="1">
                     <div class="timeout-display">
                         <span id="timeout-display">10</span>
                         <span class="timeout-unit">s</span>
                     </div>
+
                 </div>
+
+                <div class="timeout-explanation">
+                    <p data-i18n="timeoutExplanation">
+                        超时时间决定了检查每个链接时的最长等待时间。时间越长，检查越充分，但整体扫描时间会更久；时间越短，扫描越快，但可能会误判部分加载较慢的网站。
+                    </p>
+                    <ul class="timeout-tips">
+                        <li data-i18n="timeoutTip1">• 建议值：10-15 秒</li>
+                        <li data-i18n="timeoutTip2">• 网络较差时建议设置更长时间</li>
+                        <li data-i18n="timeoutTip3">• 链接较多时可以适当缩短时间</li>
+                    </ul>
+                </div>
+
                 <div class="dialog-actions">
                     <button id="cancel-timeout" class="secondary-button" data-i18n="cancel">取消</button>
                     <button id="confirm-timeout" data-i18n="confirm">确认</button>
@@ -124,6 +149,7 @@
             </div>
         </div>
     </div>
+    <script type="module" src="settings.js"></script>
     <script type="module" src="index.js"></script>
     <script src="preview.js"></script>
     <script type="module" src="bookmarkProfile.js"></script>

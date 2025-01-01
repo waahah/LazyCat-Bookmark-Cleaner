@@ -547,7 +547,7 @@
     "message": "Set Timeout"
   },
   "timeoutLabel": {
-    "message": "Select timeout duration for each link check (seconds):"
+    "message": "Set timeout duration for each link check (seconds):"
   },
   "timeoutExplanation": {
     "message": "Timeout determines the maximum waiting time when checking each link. Longer timeouts provide more thorough checks but increase overall scanning time; shorter timeouts speed up scanning but may misjudge slow-loading sites."
@@ -560,5 +560,11 @@
   },
   "timeoutTip3": {
     "message": "• Can be shortened when checking many links"
+  },
+  "scanSettings": {
+    "message": "Scan Settings"
+  },
+  "cannotChangeSettingsDuringScan": {
+    "message": "Cannot change settings during scan"
   }
 }

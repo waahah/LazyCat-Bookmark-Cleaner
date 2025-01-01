@@ -1,3 +1,5 @@
+import { initSettings, showTimeoutDialog, isFirstScan, markScanned } from './settings.js';
+
 // 添加全局变量声明
 let scanCancelled = false;
 let invalidBookmarks = [];
@@ -8,6 +10,7 @@ let isScanning = false;
 let selectedBookmarks = new Set();
 let scanStartTime = 0;
 let scanDurationInterval;
+let currentScanController = null;
 
 // 配置选项
 const CONFIG = {
@@ -223,25 +226,74 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     scanButton.addEventListener('click', async () => {
         const container = document.querySelector('.scan-container');
+        const settingsButton = document.getElementById('settings-button');
         
         // 如果正在扫描，则取消扫描
         if (container.classList.contains('scanning')) {
-            scanCancelled = true;
+            await cancelScan();
+            
+            // 更新UI状态
             container.classList.remove('scanning');
-            
-            // 取消扫描时重置计时器
-            cancelScan();
-            
-            // 更改按钮样式为取消状态
             scanButton.classList.remove('cancel');
-            // 重置按钮文案
             buttonText.textContent = chrome.i18n.getMessage('scanBookmarks');
             
-            // 重置所有状态和显示
+            // 显示设置按钮
+            if (settingsButton) {
+                settingsButton.style.display = '';
+            }
+            
+            // 重置所有状态和数据
             resetScanState();
-            // 重置所有数据
             resetScanData();
             return;
+        }
+        
+        // 开始新扫描时隐藏设置按钮
+        if (settingsButton) {
+            settingsButton.style.display = 'none';
+        }
+        
+        // 开始新扫描
+        // 重置所有数据（只在开始新扫描时调用一次）
+        resetScanData();
+        
+        // 检查是否是首次扫描
+        if (await isFirstScan()) {
+            // 显示超时设置对话框
+            showTimeoutDialog();
+            
+            // 等待用户确认设置
+            const confirmed = await new Promise(resolve => {
+                const dialog = document.getElementById('timeout-dialog');
+                const confirmBtn = document.getElementById('confirm-timeout');
+                const cancelBtn = document.getElementById('cancel-timeout');
+                
+                const handleConfirm = () => {
+                    cleanup();
+                    resolve(true);
+                };
+                
+                const handleCancel = () => {
+                    cleanup();
+                    resolve(false);
+                };
+                
+                const cleanup = () => {
+                    confirmBtn.removeEventListener('click', handleConfirm);
+                    cancelBtn.removeEventListener('click', handleCancel);
+                };
+                
+                confirmBtn.addEventListener('click', handleConfirm);
+                cancelBtn.addEventListener('click', handleCancel);
+            });
+            
+            // 如果用户取消了设置，则不开始扫描
+            if (!confirmed) {
+                return;
+            }
+            
+            // 标记已经扫描过
+            await markScanned();
         }
         
         // 开始新扫描前重置所有数据
@@ -369,10 +421,37 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         }
     });
+
+    // 初始化设置
+    await initSettings();
+    
+    // 添加设置按钮点击事件（如果你有设置按钮的话）
+    const settingsButton = document.getElementById('settings-button');
+    if (settingsButton) {
+        settingsButton.addEventListener('click', () => {
+            // 如果正在扫描中，不允许打开设置
+            if (isScanning) {
+                // 显示提示信息
+                showToast(getMessage('cannotChangeSettingsDuringScan'));
+                return;
+            }
+            
+            showTimeoutDialog();
+        });
+    }
 });
 
 async function scanBookmarks(node, path = [], counter = { count: 0, total: 0, shouldCancel: () => false }) {
     try {
+        // 创建新的 AbortController
+        currentScanController = new AbortController();
+        const signal = currentScanController.signal;
+        
+        // 检查是否已取消
+        if (signal.aborted) {
+            throw new Error('Scan cancelled');
+        }
+        
         if (counter.shouldCancel()) {
             throw new Error('Scan cancelled');
         }
@@ -471,9 +550,13 @@ async function scanBookmarks(node, path = [], counter = { count: 0, total: 0, sh
         }
     } catch (error) {
         if (error.message === 'Scan cancelled') {
+            console.log('Scan was cancelled');
         } else {
-            handleError(error);
+            console.error('Error during scan:', error);
         }
+        throw error;
+    } finally {
+        currentScanController = null;
     }
 }
 
@@ -485,7 +568,10 @@ async function checkBookmarksInBatch(bookmarks, counter, batchSize = CONFIG.batc
         if (i > 0) {
             await new Promise(resolve => setTimeout(resolve, 1000));
         }
-
+        // 检查是否取消
+        if (counter.shouldCancel()) {
+            throw new Error('Scan cancelled');
+        }
         const batch = bookmarks.slice(i, i + batchSize);
         const checks = batch.map(async bookmark => {
             try {
@@ -1313,6 +1399,12 @@ function resetScanState() {
         container.classList.remove('scanning');
         container.classList.remove('scan-complete');
     }
+    
+    // 显示设置按钮
+    const settingsButton = document.getElementById('settings-button');
+    if (settingsButton) {
+        settingsButton.style.display = '';
+    }
 }
 
 // 添加重置数据的函数
@@ -1390,14 +1482,33 @@ function finishScan() {
 }
 
 // 在取消扫描时重置计时器
-function cancelScan() {
+async function cancelScan() {
+    scanCancelled = true;
+    
+    // 取消所有正在进行的请求
+    await chrome.runtime.sendMessage({ type: 'cancelScan' });
+    
+    // 如果存在当前扫描控制器，则中止它
+    if (currentScanController) {
+        currentScanController.abort();
+        currentScanController = null;
+    }
+    
+    // 清理计时器
     clearInterval(scanDurationInterval);
     scanStartTime = 0;
-    const durationEl = document.getElementById('scan-duration');
-    if (durationEl) {
-        durationEl.textContent = '0';
-    }
+    
+    // 隐藏动画
     hideMovingCat();
+    
+    // 重置进度
+    initializeProgressRing();
+    
+    // 显示设置按钮
+    const settingsButton = document.getElementById('settings-button');
+    if (settingsButton) {
+        settingsButton.style.display = '';
+    }
 }
 
 // 添加创建移动猫咪的函数
@@ -1495,6 +1606,22 @@ function initCatInteraction() {
             }, 300);
         }, 2000);
     });
+}
+
+// 添加一个简单的 toast 提示函数
+function showToast(message) {
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.textContent = message;
+    document.body.appendChild(toast);
+
+    // 2秒后自动消失
+    setTimeout(() => {
+        toast.classList.add('toast-hide');
+        setTimeout(() => {
+            document.body.removeChild(toast);
+        }, 300);
+    }, 2000);
 }
 
 
