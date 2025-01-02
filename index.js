@@ -91,29 +91,29 @@ function getLocalizedErrorMessage(error) {
 // 添加更新全选按钮状态的函数
 function updateSelectAllButtonState() {
     const selectAllBtn = document.getElementById('select-all');
-    const checkboxes = document.querySelectorAll('.bookmark-checkbox');
+    // 只获取当前可见的复选框
+    const visibleCheckboxes = Array.from(document.querySelectorAll('.result-item'))
+        .filter(item => item.style.display !== 'none')
+        .map(item => item.querySelector('.bookmark-checkbox'));
     
-    if (selectAllBtn && checkboxes.length > 0) {
-        const isAllSelected = Array.from(checkboxes).every(cb => cb.checked);
+    if (selectAllBtn && visibleCheckboxes.length > 0) {
+        const isAllSelected = visibleCheckboxes.every(cb => cb.checked);
         
-        // 获取按钮内的 span 元素
         let span = selectAllBtn.querySelector('span[data-i18n]');
         
-        // 如果没有找到带有 data-i18n 属性的 span，则创建一个
         if (!span) {
             span = document.createElement('span');
             span.setAttribute('data-i18n', 'selectAll');
-            selectAllBtn.textContent = ''; // 清空按钮文本
+            selectAllBtn.textContent = '';
             selectAllBtn.appendChild(span);
         }
         
-        // 根据选中状态设置合适的国际化消息
         const messageKey = isAllSelected ? 'deselectAll' : 'selectAll';
         span.setAttribute('data-i18n', messageKey);
         span.textContent = chrome.i18n.getMessage(messageKey);
         
-        // 设置按钮状态
-        selectAllBtn.disabled = checkboxes.length === 0;
+        // 只有当有可见项目时才启用按钮
+        selectAllBtn.disabled = visibleCheckboxes.length === 0;
     }
 }
 
@@ -986,27 +986,29 @@ function initBatchActions() {
         console.log('Select all clicked'); // 调试日志
         if (isScanning) return;
         
-        const checkboxes = document.querySelectorAll('.bookmark-checkbox');
-        console.log('Found checkboxes:', checkboxes.length); // 调试日志
+        // 获取当前可见的复选框
+        const visibleItems = Array.from(document.querySelectorAll('.result-item'))
+            .filter(item => item.style.display !== 'none');
+        const visibleCheckboxes = visibleItems.map(item => item.querySelector('.bookmark-checkbox'));
         
-        const isAllSelected = Array.from(checkboxes).every(cb => cb.checked);
+        // 检查是否所有可见项目都已选中
+        const isAllSelected = visibleCheckboxes.every(cb => cb.checked);
         
-        checkboxes.forEach(checkbox => {
+        // 切换选中状态
+        visibleCheckboxes.forEach(checkbox => {
             checkbox.checked = !isAllSelected;
             const bookmarkId = checkbox.getAttribute('data-id');
-            const resultItem = checkbox.closest('.result-item');
-            
             if (!isAllSelected) {
                 selectedBookmarks.add(bookmarkId);
-                resultItem.classList.add('selected');
+                checkbox.closest('.result-item').classList.add('selected');
             } else {
                 selectedBookmarks.delete(bookmarkId);
-                resultItem.classList.remove('selected');
+                checkbox.closest('.result-item').classList.remove('selected');
             }
         });
         
-        updateSelectAllButtonState();
         updateDeleteButtonState();
+        updateSelectAllButtonState();
     });
 
     // 添加删除按钮事件监听器
@@ -1270,25 +1272,34 @@ function createFilterTags() {
 
 // 修改应用筛选函数
 function applyFilter() {
+    // 清除之前的选择
+    selectedBookmarks.clear();
+
     const items = document.querySelectorAll('.result-item');
     items.forEach(item => {
+        // 移除所有选中状态的样式
+        item.classList.remove('selected');
+        const checkbox = item.querySelector('.bookmark-checkbox');
+        if (checkbox) {
+            checkbox.checked = false;
+        }
+
         const reasonTag = item.querySelector('.bookmark-reason');
         if (!reasonTag) return;
 
         const isEmptyFolder = reasonTag.classList.contains('empty-folder-tag');
         const currentReason = reasonTag.textContent.trim();
-        
+
         if (currentFilter === 'all') {
             item.style.display = '';
         } else if (currentFilter === 'empty-folder') {
             item.style.display = isEmptyFolder ? '' : 'none';
         } else {
-            // 直接使用完整的错误文本进行匹配
             item.style.display = (currentReason === currentFilter) ? '' : 'none';
         }
     });
-    
-    // 更新选中状态和按钮
+
+    // 更新按钮状态
     updateSelectAllButtonState();
     updateDeleteButtonState();
 }

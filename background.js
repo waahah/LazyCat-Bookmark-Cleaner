@@ -376,11 +376,6 @@ function getStatusCodeReason(code) {
     return reasons[code] || `Status code: ${code}`;
 }
 
-// 添加 getMessage 函数定义
-function getMessage(messageName, substitutions = null) {
-    return chrome.i18n.getMessage(messageName, substitutions);
-}
-
 function handleStatusCode(statusCode, url) {
     // 2xx 和 3xx 都认为是有效的
     if (statusCode >= 200 && statusCode < 400) {
@@ -402,7 +397,7 @@ function handleStatusCode(statusCode, url) {
             case 504: // Gateway Timeout
                 return {
                     isValid: true,
-                    reason: getMessage('errorType_temporaryError', 'Service temporarily unavailable')
+                    reason: ('errorType_temporaryError', 'Service temporarily unavailable')
                 };
                 
             case 501: // Not Implemented
