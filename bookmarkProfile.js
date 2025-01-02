@@ -96,14 +96,10 @@ function showNicknameModal(isFirstTime = true) {  // 添加参数标识是否首
             await setNickname(nickname);
             // 更新标题
             updateProfileTitle(nickname);
-            // 关闭模态框
-            modalOverlay.style.display = 'none';
-            // 如果是首次设置，初始化书签画像
             if (isFirstTime) {
                 await initBookmarkProfile();
-                // 添加编辑昵称功能
-                addEditNicknameFeature();
             }
+            modalOverlay.style.display = 'none';
         } catch (error) {
             console.error('Error saving nickname:', error);
             alert(getMessage('nicknameError'));
@@ -1799,43 +1795,21 @@ function updateCategoryTags(profileEl, stats) {
 
 // 计算收藏者等级
 function calculateCollectorLevel(stats) {
-    // 添加日志输出来调试输入值
-    console.log('Calculating level with stats:', stats);
+    const scores = calculateDetailedScores(stats);
+    const totalScore = scores.totalScore;
     
-    let score = 0;
-    
-    // 1. 书签总数得分，确保是数字
-    const totalBookmarks = Number(stats.totalBookmarks) || 0;
-    score += Math.floor(totalBookmarks / 100);
-    
-    // 2. 收藏时间得分，确保是数字
-    const collectionDays = Number(stats.collectionDays) || 0;
-    score += Math.floor(collectionDays / 30);
-    
-    // 3. 组织度得分，确保是数字
-    const orgScore = Number(stats.organizationScore) || 0;
-    score += Math.floor(orgScore / 20);
-    
-    // 4. HTTPS比例得分，确保是数字
-    const httpsRatio = Number(stats.protocolStats?.https) / 
-                      (Number(stats.protocolStats?.https) + Number(stats.protocolStats?.http) || 1);
-    score += Math.floor(httpsRatio * 5);
-    
-    // 5. 域名多样性得分，确保是数字
-    const uniqueDomains = Number(stats.uniqueDomains?.size) || 0;
-    score += Math.floor(uniqueDomains / 50);
-    
-    // 记录计算的中间结果
-    console.log('Calculated score:', score);
-    
-    // 确保分数是非负数
-    score = Math.max(0, score);
-    
-    // 计算等级并确保结果是有效数字
-    const level = Math.min(10, Math.max(1, Math.floor(Math.log2(score + 16)) + 1));
-    
-    console.log('Final level:', level);
-    return level;
+    // 直接根据分数判断等级
+    if (totalScore >= 527) return 10;
+    if (totalScore >= 271) return 9;
+    if (totalScore >= 143) return 8;
+    if (totalScore >= 79) return 7;
+    if (totalScore >= 47) return 6;
+    if (totalScore >= 31) return 5;
+    if (totalScore >= 23) return 4;
+    if (totalScore >= 19) return 3;
+    if (totalScore >= 17) return 2;
+    if (totalScore >= 16) return 1;
+    return 1;
 }
 
 // 添加收藏者称号常量
@@ -1853,50 +1827,55 @@ const COLLECTOR_TITLES = {
 };
 
 // 修改收藏者称号计算提示的部分
-const tooltipContent = {
-    zh: `
-        <div class="tooltip-title">收藏者称号计算：</div>
-        <div class="title-list">
-            ${Object.entries(COLLECTOR_TITLES).map(([lvl, titles]) => {
-                const requiredScore = Math.pow(2, lvl - 1) + 15;
-                // 使用 level 而不是 validLevel
-                return `
-                    <div class="title-item ${lvl == level ? 'current' : ''}">
-                        <span class="title-level">Lv.${lvl}</span>
-                        <span class="title-name">${titles.zh}</span>
-                        <span class="title-score">${requiredScore}分</span>
-                    </div>
-                `;
-            }).join('')}
-        </div>
-        <div class="calculation-formula">
-            <div>称号等级计算公式：</div>
-            <div>所需分数 = 2^(等级-1) + 15</div>
-            <div>例如：Lv.6需要 2^5 + 15 = 47分</div>
-        </div>
-    `,
-    en: `
-        <div class="tooltip-title">Collector Title Calculation:</div>
-        <div class="title-list">
-            ${Object.entries(COLLECTOR_TITLES).map(([lvl, titles]) => {
-                const requiredScore = Math.pow(2, lvl - 1) + 15;
-                // 使用 level 而不是 validLevel
-                return `
-                    <div class="title-item ${lvl == level ? 'current' : ''}">
-                        <span class="title-level">Lv.${lvl}</span>
-                        <span class="title-name">${titles.en}</span>
-                        <span class="title-score">${requiredScore} pts</span>
-                    </div>
-                `;
-            }).join('')}
-        </div>
-        <div class="calculation-formula">
-            <div>Title Level Calculation Formula:</div>
-            <div>Required Score = 2^(level-1) + 15</div>
-            <div>Example: Lv.6 requires 2^5 + 15 = 47 pts</div>
-        </div>
-    `
-};
+function getTooltipContent(currentLevel) {
+    return {
+        zh: `
+            <div class="tooltip-title">收藏者称号计算：</div>
+            <div class="title-list">
+                ${Object.entries(COLLECTOR_TITLES).map(([lvl, titles]) => {
+            const requiredScore = Math.pow(2, lvl - 1) + 15;
+            return `
+                        <div class="title-item ${lvl == currentLevel ? 'current' : ''}">
+                            <span class="title-level">Lv.${lvl}</span>
+                            <span class="title-name">${titles.zh}</span>
+                            <span class="title-score">${requiredScore}分</span>
+                        </div>
+                    `;
+        }).join('')}
+            </div>
+            <div class="calculation-formula">
+                <div>称号等级计算公式：</div>
+                <div>所需分数 = 2^(等级-1) + 15</div>
+                <div>例如：Lv.6需要 2^5 + 15 = 47分</div>
+            </div>
+        `,
+        en: `
+            <div class="tooltip-title">Collector Title Calculation:</div>
+            <div class="title-list">
+                ${Object.entries(COLLECTOR_TITLES).map(([lvl, titles]) => {
+            const requiredScore = Math.pow(2, lvl - 1) + 15;
+            return `
+                        <div class="title-item ${lvl == currentLevel ? 'current' : ''}">
+                            <span class="title-level">Lv.${lvl}</span>
+                            <span class="title-name">${titles.en}</span>
+                            <span class="title-score">${requiredScore} pts</span>
+                        </div>
+                    `;
+        }).join('')}
+            </div>
+            <div class="calculation-formula">
+                <div>Title Level Calculation Formula:</div>
+                <div>Required Score = 2^(level-1) + 15</div>
+                <div>Example: Lv.6 requires 2^5 + 15 = 47 pts</div>
+            </div>
+        `
+    };
+}
+// 在需要使用 tooltipContent 的地方，传入当前等级
+function updateTooltip(currentLevel) {
+    const tooltipContent = getTooltipContent(currentLevel);
+    // 使用 tooltipContent...
+}
 // 在文件末尾添加分享相关函数
 async function initShareFeature() {
     console.log('Initializing share feature...');
