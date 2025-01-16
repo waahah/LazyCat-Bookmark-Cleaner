@@ -405,11 +405,11 @@ function drawTrendLine(svg, data) {
 
     const stop1 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
     stop1.setAttribute('offset', '0%');
-    stop1.setAttribute('stop-color', 'var(--system-blue)');
+    stop1.setAttribute('stop-color', '#10b981'); // Updated color
 
     const stop2 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
     stop2.setAttribute('offset', '100%');
-    stop2.setAttribute('stop-color', '#5856d6');
+    stop2.setAttribute('stop-color', '#10b981'); // Updated color
 
     gradient.appendChild(stop1);
     gradient.appendChild(stop2);
@@ -482,7 +482,7 @@ function drawTrendLine(svg, data) {
         circle.setAttribute('cy', y);
         circle.setAttribute('r', '4');
         circle.setAttribute('fill', 'white');
-        circle.setAttribute('stroke', 'var(--system-blue)');
+        circle.setAttribute('stroke', '#10b981');
         circle.setAttribute('stroke-width', '2');
 
         circle.addEventListener('mouseover', (e) => {
@@ -878,9 +878,9 @@ async function calculateBookmarkStats(rootNode) {
         oldestBookmark: null,
         newestBookmark: null,
         duplicateUrls: {
-            count: 0,            // 重复URL的总数
-            percentage: 0,       // 占总书签的百分比
-            urlCounts: new Map() // 用于统计每个URL的出现次数
+            urlCounts: new Map(), // 存储URL及其出现次数
+            count: 0,            // 重复的URL数量
+            percentage: 0        // 重复URL占比
         }
     };
 
@@ -951,29 +951,49 @@ async function calculateBookmarkStats(rootNode) {
         if (node.url) {
             // 只有当 URL 不在有效协议列表中时才计入总数
             if (!CONFIG.validProtocols.some(protocol => node.url.startsWith(protocol))) {
-                const dateAdded = new Date(node.dateAdded);
-                
-                // 更新时间统计
-                if (!stats.timeStats.oldest || dateAdded < stats.timeStats.oldest) {
-                    stats.timeStats.oldest = dateAdded;
-                    stats.oldestBookmark = {
-                        url: node.url,
-                        title: node.title,
-                        dateAdded: dateAdded
-                    };
-                }
-                if (!stats.timeStats.newest || dateAdded > stats.timeStats.newest) {
-                    stats.timeStats.newest = dateAdded;
-                    stats.newestBookmark = {
-                        url: node.url,
-                        title: node.title,
-                        dateAdded: dateAdded
-                    };
-                }
+                // 添加日期验证
+                let dateAdded;
+                try {
+                    // 确保 dateAdded 是有效的时间戳
+                    if (node.dateAdded && !isNaN(node.dateAdded)) {
+                        dateAdded = new Date(node.dateAdded);
+                        // 验证日期是否有效
+                        if (dateAdded.toString() === 'Invalid Date') {
+                            dateAdded = new Date(); // 使用当前日期作为后备
+                        }
+                    } else {
+                        dateAdded = new Date(); // 使用当前日期作为后备
+                    }
+                    
+                    // 更新时间统计
+                    if (!stats.timeStats.oldest || dateAdded < stats.timeStats.oldest) {
+                        stats.timeStats.oldest = dateAdded;
+                        stats.oldestBookmark = {
+                            url: node.url,
+                            title: node.title,
+                            dateAdded: dateAdded
+                        };
+                    }
+                    if (!stats.timeStats.newest || dateAdded > stats.timeStats.newest) {
+                        stats.timeStats.newest = dateAdded;
+                        stats.newestBookmark = {
+                            url: node.url,
+                            title: node.title,
+                            dateAdded: dateAdded
+                        };
+                    }
 
-                // 统计每日书签数量
-                const dateKey = dateAdded.toISOString().split('T')[0];
-                bookmarksByDate.set(dateKey, (bookmarksByDate.get(dateKey) || 0) + 1);
+                    // 统计每日书签数量
+                    try {
+                        const dateKey = dateAdded.toISOString().split('T')[0];
+                        bookmarksByDate.set(dateKey, (bookmarksByDate.get(dateKey) || 0) + 1);
+                    } catch (e) {
+                        console.warn('Error creating date key for bookmark:', e);
+                    }
+
+                } catch (e) {
+                    console.warn('Error processing date for bookmark:', node.url, e);
+                }
 
                 // 统计域名和协议
                 try {
@@ -1003,10 +1023,8 @@ async function calculateBookmarkStats(rootNode) {
                 // 标准化 URL（移除尾部斜杠等）
                 const normalizedUrl = normalizeUrl(node.url);
                 // 更新 URL 计数
-                stats.duplicateUrls.urlCounts.set(
-                    normalizedUrl, 
-                    (stats.duplicateUrls.urlCounts.get(normalizedUrl) || 0) + 1
-                );
+                const currentCount = stats.duplicateUrls.urlCounts.get(normalizedUrl) || 0;
+                stats.duplicateUrls.urlCounts.set(normalizedUrl, currentCount + 1);
             }
         }
     }
@@ -1053,15 +1071,15 @@ async function calculateBookmarkStats(rootNode) {
     ).toFixed(1);
 
     // 计算重复URL的统计信息
-    let duplicateCount = 0;
-    stats.duplicateUrls.urlCounts.forEach((count, url) => {
+    let duplicateUrlCount = 0;
+    stats.duplicateUrls.urlCounts.forEach((count) => {
         if (count > 1) {
-            duplicateCount += (count - 1); // 减1是因为第一个不算重复
+            duplicateUrlCount++; // 只统计重复的URL数量
         }
     });
 
-    stats.duplicateUrls.count = duplicateCount;
-    stats.duplicateUrls.percentage = ((duplicateCount / stats.totalBookmarks) * 100).toFixed(1);
+    stats.duplicateUrls.count = duplicateUrlCount;
+    stats.duplicateUrls.percentage = ((duplicateUrlCount / stats.totalBookmarks) * 100).toFixed(1);
 
     return stats;
 }
@@ -1069,7 +1087,12 @@ async function calculateBookmarkStats(rootNode) {
 // 辅助函数：格式化日期
 function formatDate(date) {
     if (!date) return '';
-    return date.toISOString().split('T')[0].replace(/-/g, '.');
+    try {
+        return date.toISOString().split('T')[0].replace(/-/g, '.');
+    } catch (e) {
+        console.warn('Error formatting date:', e);
+        return '';
+    }
 }
 
 // 添加一个辅助函数来提取主域名
@@ -1193,20 +1216,9 @@ function calculateHttpsRatio(protocolStats) {
 function normalizeUrl(url) {
     try {
         const urlObj = new URL(url);
-        // 移除末尾的斜杠
-        let normalized = urlObj.origin + urlObj.pathname.replace(/\/+$/, '');
-        // 添加查询参数（如果有）
-        if (urlObj.search) {
-            normalized += urlObj.search;
-        }
-        // 添加哈希（如果有）
-        if (urlObj.hash) {
-            normalized += urlObj.hash;
-        }
-        return normalized.toLowerCase();
-    } catch (e) {
-        // 如果 URL 解析失败，返回原始值
-        return url.toLowerCase();
+        return urlObj.origin + urlObj.pathname.replace(/\/$/, '');
+    } catch {
+        return url;
     }
 }
 
@@ -1881,24 +1893,36 @@ async function initShareFeature() {
     console.log('Initializing share feature...');
     
     const shareButton = document.querySelector('.share-button');
+    if (!shareButton) return;
+    
     console.log('Share button found:', shareButton);
     
-    // 直接点击分享按钮生成图片
-    shareButton?.addEventListener('click', async () => {
+    // 移除所有现有的点击事件监听器
+    shareButton.replaceWith(shareButton.cloneNode(true));
+    
+    // 重新获取新的按钮元素
+    const newShareButton = document.querySelector('.share-button');
+    
+    // 添加单个事件监听器
+    newShareButton?.addEventListener('click', async () => {
         console.log('Share button clicked');
         try {
+            // 禁用按钮防止重复点击
+            newShareButton.disabled = true;
+            
             const nickname = await getNickname();
             if (!nickname) {
                 alert(getMessage('nicknameNotFound'));
+                newShareButton.disabled = false;
                 return;
             }
 
             // 保存并修改分享按钮
-            const originalShareButtonHtml = shareButton.innerHTML;
-            const originalShareButtonStyle = shareButton.getAttribute('style');
+            const originalShareButtonHtml = newShareButton.innerHTML;
+            const originalShareButtonStyle = newShareButton.getAttribute('style');
 
             // 将分享按钮改为品牌样式
-            shareButton.innerHTML = `
+            newShareButton.innerHTML = `
                 <div class="brand" style="
                     display: flex;
                     align-items: center;
@@ -1920,9 +1944,9 @@ async function initShareFeature() {
                     ">懒猫书签清理</span>
                 </div>
             `;
-            shareButton.style.background = 'none';
-            shareButton.style.border = 'none';
-            shareButton.style.padding = '0';
+            newShareButton.style.background = 'none';
+            newShareButton.style.border = 'none';
+            newShareButton.style.padding = '0';
 
             // 等待DOM更新和图片加载
             await new Promise(resolve => setTimeout(resolve, 300));
@@ -1957,17 +1981,19 @@ async function initShareFeature() {
             link.href = imgData;
             link.click();
 
-            // 恢复原始内容
-            shareButton.innerHTML = originalShareButtonHtml;
+            // 恢复按钮状态
+            newShareButton.disabled = false;
+            newShareButton.innerHTML = originalShareButtonHtml;
             if (originalShareButtonStyle) {
-                shareButton.setAttribute('style', originalShareButtonStyle);
+                newShareButton.setAttribute('style', originalShareButtonStyle);
             } else {
-                shareButton.removeAttribute('style');
+                newShareButton.removeAttribute('style');
             }
 
         } catch (error) {
             console.error('Error generating image:', error);
             alert(getMessage('shareError'));
+            newShareButton.disabled = false;
         }
     });
 }
@@ -1980,6 +2006,20 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.log('Share feature initialized');
     } catch (error) {
         console.error('Error initializing share feature:', error);
+    }
+    // 获取清单文件中的版本号
+    const manifest = chrome.runtime.getManifest();
+    const version = manifest.version;
+
+    // 创建版本号元素
+    const versionTag = document.createElement('span');
+    versionTag.className = 'version-tag';
+    versionTag.textContent = `v${version}`;
+
+    // 将版本号添加到 brand div 中
+    const brandDiv = document.querySelector('.brand');
+    if (brandDiv) {
+        brandDiv.appendChild(versionTag);
     }
 });
 

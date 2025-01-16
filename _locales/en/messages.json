@@ -3,7 +3,7 @@
     "message": "LazyCat Bookmark Cleaner"
   },
   "extDescription": {
-    "message": "Clean invalid bookmarks and empty folders with one click, generate personalized bookmark profile. "
+    "message": "Clean invalid bookmarks, duplicates and empty folders with one click. Generate bookmark profile. All features run locally to protect your privacy"
   },
   "totalBookmarks": {
     "message": "Total Bookmarks"
@@ -62,7 +62,7 @@
     "message": "Delete Selected"
   },
   "confirmDelete": {
-    "message": "Are you sure you want to delete $COUNT$ selected bookmarks?",
+    "message": "Are you sure you want to delete $COUNT$ selected items?",
     "placeholders": {
       "count": {
         "content": "$1"
@@ -566,5 +566,125 @@
   },
   "cannotChangeSettingsDuringScan": {
     "message": "Cannot change settings during scan"
+  },
+  "confirmNavigation": {
+    "message": "Confirm Navigation"
+  },
+  "confirmNavigationMessage": {
+    "message": "Bookmark scan is in progress. Navigating away will interrupt the scan. Do you want to continue?"
+  },
+  "invalidLinksTab": {
+    "message": "Invalid Links"
+  },
+  "duplicatesTab": {
+    "message": "Duplicates"
+  },
+  "duplicatesTitle": {
+    "message": "Duplicate Bookmarks"
+  },
+  "duplicatesDescription": {
+    "message": "Find and clean bookmarks with identical URLs"
+  },
+  "duplicateGroups": {
+    "message": "Duplicate Groups"
+  },
+  "duplicateItems": {
+    "message": "Duplicate Items"
+  },
+  "keepNewest": {
+    "message": "Keep Newest"
+  },
+  "keepOldest": {
+    "message": "Keep Oldest"
+  },
+  "keepManual": {
+    "message": "Manual Select"
+  },
+  "duplicateLocation": {
+    "message": "Location"
+  },
+  "duplicateAddTime": {
+    "message": "Added Time"
+  },
+  "noDuplicates": {
+    "message": "✓ No duplicate bookmarks found"
+  },
+  "scanForDuplicates": {
+    "message": "Find Duplicates"
+  },
+  "duplicateGroupsCount": {
+    "message": "Found $COUNT$ duplicate groups",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "duplicateItemsCount": {
+    "message": "$COUNT$ items can be cleaned",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "confirmDeleteDuplicates": {
+    "message": "Are you sure you want to delete $COUNT$ selected duplicate bookmarks?",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "duplicateCleanSuccess": {
+    "message": "Successfully cleaned $COUNT$ duplicate bookmarks",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "scanning": {
+    "message": "Scanning..."
+  },
+  "processingDuplicates": {
+    "message": "Processing..."
+  },
+  "duplicateUrlCount": {
+    "message": "Duplicate URLs"
+  },
+  "duplicateBookmarkCount": {
+    "message": "Duplicate Bookmarks"
+  },
+  "invalidBookmarksTab": {
+    "message": "Invalid Bookmarks"
+  },
+  "addedTime": {
+    "message": "Added Time"
+  },
+  "unknownTime": {
+    "message": "Unknown time"
+  },
+  "aboutAuthor": {
+    "message": "About"
+  },
+  "deleteSuccessBookmarks": {
+    "message": "Successfully deleted $1 invalid bookmarks",
+    "description": "Successfully deleted bookmarks message"
+  },
+  "deleteSuccessFolders": {
+    "message": "Successfully deleted $1 empty folders",
+    "description": "Successfully deleted folders message"
+  },
+  "deleteSuccessMixed": {
+    "message": "Successfully deleted $1 invalid bookmarks and $2 empty folders",
+    "description": "Successfully deleted both bookmarks and folders message"
+  },
+  "errorDeleting": {
+    "message": "Error deleting bookmarks",
+    "description": "Error while deleting bookmarks"
+  },
+  "cancelSelection": {
+    "message": "Cancel Selection"
   }
 }

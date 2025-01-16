@@ -504,7 +504,6 @@ h1 {
 .button.danger-button {
     background: #10b981 ;
     color: #ffffff;
-    min-width: 120px;
 }
 
 /* 危险按钮禁用状态 */
@@ -517,13 +516,13 @@ h1 {
 
 /* 危险按钮启用状态 */
 .button.danger-button:not([disabled]) {
-    background: #10b981;
+    background: #ff0000;
     cursor: pointer;
 }
 
 /* 危险按钮悬停效果 */
 .button.danger-button:not([disabled]):hover {
-    background: #10b981;
+    background: #ff0000;
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(108, 172, 153, 0.3);
 }
@@ -754,7 +753,7 @@ h1 {
     border-radius: 6px;
     font-size: 12px;
     white-space: normal;
-    width: 250px;
+    width: 100%;
     z-index: 1000;
     margin-bottom: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
@@ -1127,6 +1126,7 @@ h1 {
     background: #f5f5f7;
     border-radius: 12px;
     padding: 16px;
+    width: 158px;
 }
 
 .card-label {
@@ -1140,6 +1140,12 @@ h1 {
     font-weight: 500;
     color: #1d1d1f;
     margin-bottom: 4px;
+    white-space: nowrap;
+    /* Prevents text from wrapping to the next line */
+    overflow: hidden;
+    /* Hides the overflow text */
+    text-overflow: ellipsis;
+    /* Adds an ellipsis (...) to indicate overflow */
 }
 
 .card-subtext {
@@ -1176,6 +1182,7 @@ h1 {
     border: none;
     height: 320px;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+    width: 162px;
 }
 
 .domain-item.primary:hover {
@@ -1220,6 +1227,7 @@ h1 {
     align-items: center;
     gap: 12px;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+    width: 166px;
 }
 
 .domain-item.secondary:hover {
@@ -1244,6 +1252,9 @@ h1 {
     font-weight: 500;
     color: #1d1d1f;
     margin-bottom: 4px;
+    white-space: nowrap; /* Prevents text from wrapping to the next line */
+    overflow: hidden;    /* Hides the overflow text */
+    text-overflow: ellipsis; /* Adds an ellipsis (...) to indicate overflow */
 }
 
 .domain-meta {
@@ -1451,7 +1462,7 @@ h1 {
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 10px 20px;
+    padding: 10px 10px;
     border-radius: 12px;
     text-decoration: none;
     color: var(--system-gray);
@@ -2242,4 +2253,378 @@ input[type="range"]::-webkit-slider-thumb:hover {
         opacity: 0;
         transform: translate(-50%, 20px);
     }
+}
+/* 修改对话框样式 */
+#confirm-navigation-dialog {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: none;
+    z-index: 1000;
+}
+
+/* 添加遮罩层 */
+.dialog-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+}
+/* 对话框内容样式 */
+.dialog-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 400px;
+    z-index: 1;
+}
+.dialog {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(20px);
+}
+
+.dialog-content h3 {
+    margin: 0 0 16px 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #1d1d1f;
+}
+
+.dialog-content p {
+    margin: 0 0 24px 0;
+    color: var(--system-gray);
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* 对话框按钮容器 */
+.dialog-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+/* 对话框按钮样式 */
+.dialog-buttons button {
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+}
+
+/* 取消按钮样式 */
+.dialog-buttons .secondary-button {
+    background: transparent;
+    color: #10b981;
+    border: 1px solid #10b981;
+}
+
+/* 确认按钮样式 */
+.dialog-buttons .primary-button {
+    background: #10b981;
+    color: white;
+}
+
+/* 按钮悬停效果 */
+.dialog-buttons button:hover {
+    transform: translateY(-1px);
+}
+
+.dialog-buttons .secondary-button:hover {
+    background: rgba(16, 185, 129, 0.1);
+}
+
+.dialog-buttons .primary-button:hover {
+    background: #0ea371;
+}
+/* 重复书签页面样式 */
+.duplicate-groups {
+    margin-top: 32px;
+}
+
+.duplicate-group {
+    background: var(--card-background);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 8px var(--card-shadow);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.duplicate-group:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px var(--card-shadow);
+}
+
+.group-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    gap: 16px;
+    /* 增加组件之间的间距 */
+}
+.group-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+}
+.favicon {
+    width: 16px;
+    height: 16px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+.url {
+    color: var(--system-blue);
+    text-decoration: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 700px;
+    /* 限制最大宽度 */
+    display: inline-block;
+    font-size: 14px;
+    /* 稍微减小字体大小 */
+}
+
+.url:hover {
+    text-decoration: underline;
+}
+
+.count {
+    background: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    flex-shrink: 0;
+}
+
+.group-items {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.bookmark-item {
+    display: grid;
+    grid-template-columns: 30px 1fr auto;
+    gap: 16px;
+    padding: 16px;
+    background: #f5f5f7;
+    border-radius: 8px;
+    transition: background-color 0.2s ease;
+}
+
+.bookmark-item:hover {
+    background: #f0f0f2;
+}
+.bookmark-added-time {
+    color: var(--system-gray);
+    font-size: 13px;
+    white-space: nowrap;
+    padding-left: 16px;
+    border-left: 1px solid rgba(0, 0, 0, 0.1);
+}
+.item-checkbox {
+    display: flex;
+    align-items: center;
+}
+
+.keep-checkbox {
+    width: 18px;
+    height: 18px;
+    accent-color: #ff0000;
+    cursor: pointer;
+}
+
+.item-info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.item-title {
+    font-weight: 500;
+    color: #1d1d1f;
+}
+
+.item-meta {
+    display: flex;
+    gap: 24px;
+    color: var(--system-gray);
+    font-size: 13px;
+}
+
+
+/* 操作按钮区域基础样式 */
+.duplicate-options {
+    display: flex;
+    gap: 16px;
+    padding: 16px 0;
+    position: sticky;
+    top: 0px;
+    /* 调整固定位置，避免被顶部导航栏遮挡 */
+    z-index: 100;
+    transition: background 0.3s ease, backdrop-filter 0.3s ease, border-bottom 0.3s ease;
+    margin: 0;
+}
+
+/* 滚动时的样式 */
+.duplicate-options.scrolled {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(8px);
+}
+.container {
+    padding-top: 24px;
+}
+
+.duplicate-options button {
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.duplicate-options button[data-action="keepNewest"] {
+    background: #10b981;
+    color: #ffffff;
+}
+.duplicate-options button[data-action="keepNewest"]:hover{
+    background: #10b981;
+    color: #ffffff;
+}
+
+.duplicate-options button[data-action="keepOldest"] {
+    background: #ffffff;
+    color: #10b981;
+}
+.duplicate-options button[data-action="keepOldest"]:hover{
+    background: #10b981;
+    color: #ffffff;
+}
+
+.duplicate-options button[data-action="keepManual"] {
+    background: rgba(142, 142, 147, 0.1);
+    color: var(--system-gray);
+}
+.duplicate-options button[data-action="keepManual"]:hover{
+    background: #10b981;
+    color: #ffffff;
+}
+
+.duplicate-options button:hover {
+    transform: translateY(-1px);
+}
+
+/* 无重复书签提示 */
+.no-duplicates {
+    text-align: center;
+    padding: 48px 0;
+    color: #10b981;
+    font-size: 16px;
+    font-weight: 500;
+}
+/* 组标题中的复选框样式 */
+.group-checkbox {
+    width: 18px;
+    height: 18px;
+    margin-right: 8px;
+    cursor: pointer;
+    accent-color: #ff0000;
+}
+
+/* 调整组标题布局 */
+.group-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    min-width: 0;
+    /* 确保flex子项可以正确收缩 */
+}
+
+
+/* 文件夹路径提示框样式 */
+.folder-path-tooltip {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    white-space: nowrap;
+    z-index: 1000;
+    pointer-events: none;
+    animation: tooltip-fade-in 0.2s ease;
+}
+
+.folder-path-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: rgba(0, 0, 0, 0.8);
+}
+
+@keyframes tooltip-fade-in {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -4px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+}
+
+/* 确保统计卡片可以正确显示提示框 */
+.stat-card {
+    position: relative;
+}
+
+.brand {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.version-tag {
+    font-size: 12px;
+    color: var(--system-gray);
+    opacity: 0.8;
+    margin-left: 4px;
+    font-weight: normal;
 }

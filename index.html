@@ -10,21 +10,29 @@
     <div class="app-header">
         <nav class="nav-tabs">
             <div class="brand">
-                <img src="images/logo.jpg" alt="懒猫书签清理" class="brand-logo">
+                <img src="images/logo.jpg" alt="Lazy Cat Bookmark Cleaner" class="brand-logo">
                 <span class="brand-name" data-i18n="brandName">懒猫书签清理</span>
             </div>
             <div class="nav-links">
-                <a href="index.html" class="nav-tab active">
+                <a href="index.html" class="nav-tab active" target="_blank">
                     <span class="tab-icon">🧹</span>
-                    <span data-i18n="cleanerTab">书签清理</span>
+                    <span data-i18n="invalidBookmarksTab">失效书签</span>
                 </a>
-                <a href="profile.html" class="nav-tab">
+                <a href="duplicates.html" class="nav-tab" target="_blank">
+                    <span class="tab-icon">🔄</span>
+                    <span data-i18n="duplicatesTab">重复书签</span>
+                </a>
+                <a href="profile.html" class="nav-tab" target="_blank">
                     <span class="tab-icon">📊</span>
                     <span data-i18n="profileTab">书签画像</span>
                 </a>
                 <a href="https://www.ainewtab.app/" class="nav-tab" target="_blank">
                     <span class="tab-icon">📑</span>
-                    <span data-i18n="newTab">新标签页</span>
+                    <span data-i18n="newTab">书签新标签页</span>
+                </a>
+                <a href="https://www.orionwang.com/about/" class="nav-tab" target="_blank">
+                    <span class="tab-icon">👨‍💻</span>
+                    <span data-i18n="aboutAuthor">关于</span>
                 </a>
             </div>
         </nav>
@@ -41,7 +49,6 @@
                 </svg>
                 <div class="progress-content">
                     <span class="progress-text">51%</span>
-                    <span class="progress-status">Scanning...</span>
                 </div>
             </div>
             
@@ -145,6 +152,22 @@
                 <div class="dialog-actions">
                     <button id="cancel-timeout" class="secondary-button" data-i18n="cancel">取消</button>
                     <button id="confirm-timeout" data-i18n="confirm">确认</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="confirm-navigation-dialog" class="dialog-overlay">
+            <div class="dialog-backdrop"></div>
+            <div class="dialog-container">
+                <div class="dialog">
+                    <div class="dialog-content">
+                        <h3 data-i18n="navigationConfirmTitle">切换页面确认</h3>
+                        <p data-i18n="navigationConfirmMessage">正在扫描书签，切换页面将中断扫描。是否确认切换？</p>
+                    </div>
+                    <div class="dialog-buttons">
+                        <button class="secondary-button" data-i18n="cancel">取消</button>
+                        <button class="primary-button" data-i18n="confirm">确认</button>
+                    </div>
                 </div>
             </div>
         </div>

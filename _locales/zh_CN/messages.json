@@ -3,7 +3,7 @@
     "message": "懒猫书签清理"
   },
   "extDescription": {
-    "message": "一键清理失效书签和空文件夹，生成个性化书签画像，所有功能完全本地运行，保护您的隐私安全"
+    "message": "一键清理失效书签、重复书签和空文件夹，生成个性化书签画像，所有功能完全本地运行，保护您的隐私安全"
   },
   "totalBookmarks": {
     "message": "书签总数"
@@ -62,7 +62,7 @@
     "message": "删除所选"
   },
   "confirmDelete": {
-    "message": "确定要删除已选择的 $COUNT$ 个书签吗？",
+    "message": "确定要删除已选择的 $COUNT$ 个项目吗？",
     "placeholders": {
       "count": {
         "content": "$1"
@@ -526,6 +526,132 @@
   },
   "cannotChangeSettingsDuringScan": {
     "message": "扫描过程中无法修改设置"
+  },
+  "confirmNavigation": {
+    "message": "切换页面确认"
+  },
+  "confirmNavigationMessage": {
+    "message": "正在扫描书签，切换页面将中断扫描。是否确认切换？"
+  },
+  "errorType_duplicate": {
+    "message": "重复书签"
+  },
+  "errorExplanation_duplicate": {
+    "message": "具有相同URL的重复书签"
+  },
+  "invalidLinksTab": {
+    "message": "失效链接"
+  },
+  "duplicatesTab": {
+    "message": "重复书签"
+  },
+  "duplicatesTitle": {
+    "message": "重复书签清理"
+  },
+  "duplicatesDescription": {
+    "message": "查找并清理具有相同 URL 的重复书签"
+  },
+  "duplicateGroups": {
+    "message": "重复组数"
+  },
+  "duplicateItems": {
+    "message": "重复项目"
+  },
+  "keepNewest": {
+    "message": "保留最新"
+  },
+  "keepOldest": {
+    "message": "保留最早"
+  },
+  "keepManual": {
+    "message": "手动选择"
+  },
+  "duplicateLocation": {
+    "message": "所在位置"
+  },
+  "duplicateAddTime": {
+    "message": "添加时间"
+  },
+  "noDuplicates": {
+    "message": "✓ 未发现重复书签"
+  },
+  "scanForDuplicates": {
+    "message": "查找重复"
+  },
+  "duplicateGroupsCount": {
+    "message": "共发现 $COUNT$ 组重复书签",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "duplicateItemsCount": {
+    "message": "可清理 $COUNT$ 个重复项目",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "confirmDeleteDuplicates": {
+    "message": "确定要删除选中的 $COUNT$ 个重复书签吗？",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "duplicateCleanSuccess": {
+    "message": "成功清理 $COUNT$ 个重复书签",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "scanning": {
+    "message": "正在扫描..."
+  },
+  "processingDuplicates": {
+    "message": "正在处理..."
+  },
+  "duplicateUrlCount": {
+    "message": "重复网址"
+  },
+  "duplicateBookmarkCount": {
+    "message": "重复书签"
+  },
+  "invalidBookmarksTab": {
+    "message": "失效书签"
+  },
+  "addedTime": {
+    "message": "添加时间"
+  },
+  "unknownTime": {
+    "message": "未知时间"
+  },
+  "aboutAuthor": {
+    "message": "关于"
+  },
+  "deleteSuccessBookmarks": {
+    "message": "成功删除 $1 个失效书签",
+    "description": "Successfully deleted bookmarks message"
+  },
+  "deleteSuccessFolders": {
+    "message": "成功删除 $1 个空文件夹",
+    "description": "Successfully deleted folders message"
+  },
+  "deleteSuccessMixed": {
+    "message": "成功删除 $1 个失效书签和 $2 个空文件夹",
+    "description": "Successfully deleted both bookmarks and folders message"
+  },
+  "errorDeleting": {
+    "message": "删除书签时出错",
+    "description": "Error while deleting bookmarks"
+  },
+  "cancelSelection": {
+    "message": "取消选择"
   }
 }
 

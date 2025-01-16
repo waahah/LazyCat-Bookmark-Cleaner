@@ -1,5 +1,40 @@
 import { getCurrentTimeout } from './settings.js';
 
+// 添加调试开关
+const DEBUG = {
+  enabled: false  // 生产环境默认关闭
+};
+
+// 添加调试日志函数
+function debugLog(...args) {
+  if (DEBUG.enabled) {
+    console.log(...args);
+  }
+}
+
+function debugGroup(...args) {
+  if (DEBUG.enabled) {
+    console.group(...args);
+  }
+}
+
+function debugGroupEnd() {
+  if (DEBUG.enabled) {
+    console.groupEnd();
+  }
+}
+
+function debugTable(...args) {
+  if (DEBUG.enabled) {
+    console.table(...args);
+  }
+}
+
+// 添加获取本地化消息的辅助函数
+function getMessage(messageName, substitutions = null) {
+    return chrome.i18n.getMessage(messageName, substitutions);
+}
+
 // 配置常量
 const CONFIG = {
   TIMEOUT: {
@@ -86,9 +121,9 @@ async function checkUrlOnce(url) {
     // 获取用户设置的超时时间
     const timeout = await getCurrentTimeout();
     
-    console.group(`🔍 Checking URL: ${url}`);
-    console.log(`⏱️ Start Time: ${new Date(startTime).toLocaleTimeString()}`);
-    console.log(`⏱️ Timeout: ${timeout}ms`);
+    debugGroup(`🔍 Checking URL: ${url}`);
+    debugLog(`⏱️ Start Time: ${new Date(startTime).toLocaleTimeString()}`);
+    debugLog(`⏱️ Timeout: ${timeout}ms`);
     
     const specialProtocols = [
       'chrome:', 'chrome-extension:', 'edge:', 'about:', 
@@ -97,7 +132,7 @@ async function checkUrlOnce(url) {
 
     const urlObj = new URL(url);
     if (specialProtocols.some(protocol => url.startsWith(protocol))) {
-      console.log(`🔒 Special protocol detected: ${urlObj.protocol}`);
+      debugLog(`🔒 Special protocol detected: ${urlObj.protocol}`);
       return {
         isValid: true,
         reason: 'Special protocol URL'
@@ -123,8 +158,8 @@ async function checkUrlOnce(url) {
         requestLog.endTime = Date.now();
         requestLog.duration = requestLog.endTime - requestLog.startTime;
         
-        console.log('📊 Request Summary:');
-        console.table({
+        debugLog('📊 Request Summary:');
+        debugTable({
           'Duration': `${requestLog.duration}ms`,
           'Has Response': hasResponse,
           'Status Code': requestLog.statusCode,
@@ -134,13 +169,13 @@ async function checkUrlOnce(url) {
         });
 
         if (requestLog.redirects.length > 0) {
-          console.log('↪️ Redirects:');
-          console.table(requestLog.redirects);
+          debugLog('↪️ Redirects:');
+          debugTable(requestLog.redirects);
         }
 
         if (requestLog.errors.length > 0) {
-          console.log('❌ Errors:');
-          console.table(requestLog.errors);
+          debugLog('❌ Errors:');
+          debugTable(requestLog.errors);
         }
       };
 
@@ -153,7 +188,7 @@ async function checkUrlOnce(url) {
           timeTaken: Date.now() - startTime
         });
         
-        console.log(`❌ Error detected: ${details.error}`);
+        debugLog(`❌ Error detected: ${details.error}`);
         
         const connectionErrors = [
           'net::ERR_SOCKET_NOT_CONNECTED',
@@ -180,7 +215,7 @@ async function checkUrlOnce(url) {
         if (connectionErrors.includes(details.error)) {
           const alternateUrl = new URL(url);
           alternateUrl.protocol = urlObj.protocol === 'https:' ? 'http:' : 'https:';
-          console.log(`💡 Suggestion: Try ${alternateUrl.protocol} protocol`);
+          debugLog(`💡 Suggestion: Try ${alternateUrl.protocol} protocol`);
           
           resolveResult({
             isValid: true,
@@ -218,14 +253,14 @@ async function checkUrlOnce(url) {
         });
         finalUrl = details.redirectUrl;
         requestLog.finalUrl = finalUrl;
-        console.log(`↪️ Redirect: ${details.url} -> ${details.redirectUrl}`);
+        debugLog(`↪️ Redirect: ${details.url} -> ${details.redirectUrl}`);
       };
 
       const listener = (details) => {
         if (isResolved) return;
         hasResponse = true;
         requestLog.statusCode = details.statusCode;
-        console.log(`✅ Response received: Status ${details.statusCode}`);
+        debugLog(`✅ Response received: Status ${details.statusCode}`);
         
         // 使用 handleStatusCode 的结果
         const result = handleStatusCode(details.statusCode, finalUrl || url);
@@ -252,8 +287,8 @@ async function checkUrlOnce(url) {
           removeListeners();
           
           logRequestResult();
-          console.log(`🏁 Final result:`, result);
-          console.groupEnd();
+          debugGroupEnd();
+          debugLog(`🏁 Final result:`, result);
           
           resolve(result);
         }
@@ -299,12 +334,12 @@ async function checkUrlOnce(url) {
       const timeoutId = setTimeout(() => {
         if (!isResolved) {
           const timeElapsed = Date.now() - startTime;
-          console.group('⚠️ Timeout Detection:');
-          console.log(`Time elapsed: ${timeElapsed}ms`);
-          console.log(`Has any response: ${hasResponse}`);
+          debugGroup('⚠️ Timeout Detection:');
+          debugLog(`Time elapsed: ${timeElapsed}ms`);
+          debugLog(`Has any response: ${hasResponse}`);
           
           if (!hasResponse) {
-            console.log('❌ Request timed out with no response');
+            debugLog('❌ Request timed out with no response');
             controller.abort();
             removeListeners();
             logRequestResult();
@@ -313,14 +348,14 @@ async function checkUrlOnce(url) {
               reason: 'Request Timeout'
             });
           } else {
-            console.log('⚠️ Request timed out but had partial response');
+            debugLog('⚠️ Request timed out but had partial response');
             logRequestResult();
             resolveResult({
               isValid: true,
               reason: 'Site is responding but slow'
             });
           }
-          console.groupEnd();
+          debugGroupEnd();
         }
       }, timeout);  // 使用获取到的超时时间
 
@@ -328,19 +363,43 @@ async function checkUrlOnce(url) {
         method: 'GET',
         signal: controller.signal,
         headers: {
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+          // 更现代的 User-Agent
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.6778.256 Safari/537.36',
+          // 接受的内容类型
+          'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+          // 接受的编码方式
+          'Accept-Encoding': 'gzip, deflate, br',
+          // 接受的语言
+          'Accept-Language': 'en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7',
+          // 连接类型
+          'Connection': 'keep-alive',
+          // 禁用缓存
+          'Cache-Control': 'no-cache',
+          'Pragma': 'no-cache',
+          // 升级不安全请求
+          'Upgrade-Insecure-Requests': '1',
+          // 安全头部
+          'Sec-Fetch-Dest': 'document',
+          'Sec-Fetch-Mode': 'navigate',
+          'Sec-Fetch-Site': 'none',
+          'Sec-Fetch-User': '?1',
+          // DNT (Do Not Track)
+          'DNT': '1'
         },
         mode: 'no-cors',
-        cache: 'no-cache'
+        cache: 'no-cache',
+        credentials: 'omit',  // 不发送 cookies
+        redirect: 'follow',   // 自动跟随重定向
+        referrerPolicy: 'no-referrer'  // 不发送 referrer
       }).then(response => {
-        console.log('📥 Fetch response received:', {
+        debugLog('📥 Fetch response received:', {
           status: response.status,
           type: response.type,
           url: response.url
         });
         hasResponse = true;
       }).catch((error) => {
-        console.log('❌ Fetch error:', {
+        debugLog('❌ Fetch error:', {
           name: error.name,
           message: error.message,
           type: error.type
@@ -357,13 +416,13 @@ async function checkUrlOnce(url) {
       });
     });
   } catch (error) {
-    console.error(`❌ URL parsing error:`, error);
+    debugLog(`❌ URL parsing error:`, error);
     return {
       isValid: false,
       reason: 'Invalid URL format'
     };
   } finally {
-    console.groupEnd();  // 确保日志组总是被关闭
+    debugGroupEnd();
   }
 }
 
