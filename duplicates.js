@@ -1,3 +1,5 @@
+import { createConfetti } from './confetti.js';
+
 class DuplicateBookmarkManager {
     constructor() {
         this.duplicateUrls = [];
@@ -67,9 +69,24 @@ class DuplicateBookmarkManager {
             this.duplicateUrls = this.findDuplicates(bookmarks);
             this.updateStats();
             this.renderResults();
+            
+            // 如果没有重复书签，显示成功状态并触发撒花
+            if (this.duplicateUrls.length === 0) {
+                this.showSuccessState();
+            }
         } catch (error) {
             console.error('Error scanning duplicates:', error);
         }
+    }
+
+    showSuccessState() {
+        // 显示成功状态
+        this.noDuplicatesMessage.style.display = 'block';
+        this.duplicateOptions.style.display = 'none';
+        this.duplicateGroupsContainer.innerHTML = '';
+        
+        // 触发撒花效果
+        createConfetti();
     }
 
     async getAllBookmarks() {
@@ -127,7 +144,7 @@ class DuplicateBookmarkManager {
         );
         this.duplicateBookmarkCount.textContent = totalDuplicateBookmarks;
         
-        // 显示/隐藏操作按钮
+        // 显示/隐藏操作按钮和成功状态
         this.duplicateOptions.style.display = this.duplicateUrls.length > 0 ? 'flex' : 'none';
         this.noDuplicatesMessage.style.display = this.duplicateUrls.length === 0 ? 'block' : 'none';
     }

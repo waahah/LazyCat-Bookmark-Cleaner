@@ -467,7 +467,7 @@ function handleStatusCode(statusCode, url) {
                 
             case 502: // Bad Gateway
                 return {
-                    isValid: false,
+                    isValid: true,
                     reason: getMessage('errorType_badGateway', 'Bad Gateway')
                 };
                 

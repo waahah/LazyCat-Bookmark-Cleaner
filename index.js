@@ -1,4 +1,5 @@
 import { initSettings, showTimeoutDialog, isFirstScan, markScanned } from './settings.js';
+import { createConfetti } from './confetti.js';
 
 // 添加全局变量声明
 let scanCancelled = false;
@@ -171,8 +172,20 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
 
-    // 初始化DOM元素
+    // 初始化设置
+    await initSettings();
+    
+    // 获取必要的 DOM 元素
     const scanButton = document.getElementById('scan-button');
+    const invalidList = document.getElementById('invalidList');
+    
+    // 确保必要的容器存在
+    if (!invalidList) {
+        console.error('Invalid list container not found');
+        return;
+    }
+    
+    // 初始化DOM元素
     const loadingDiv = document.getElementById('loading');
     const resultsDiv = document.getElementById('results');
     const totalBookmarksEl = document.getElementById('total-bookmarks');
@@ -349,10 +362,32 @@ document.addEventListener('DOMContentLoaded', async () => {
                     createFilterTags();
                 } else {
                     invalidList.innerHTML = `
-                        <div class="result-item">
-                            <div style="color: #34C759">${chrome.i18n.getMessage('allValid')}</div>
+                        <div class="success-state">
+                            <div class="success-icon">
+                                <img src="images/icon128.png" alt="Happy Cat" class="cat-icon">
+                                <div class="success-badge">✓</div>
+                            </div>
+                            <div class="success-message">
+                                <h3 data-i18n="scanCompleteTitle">书签状态良好！</h3>
+                                <p data-i18n="scanCompleteDesc">暂时没有发现失效的书签，也没有发现空文件夹哟</p>
+                            </div>
+                            <div class="success-tips">
+                                <p data-i18n="nextScanTip">建议每隔 1-2 个月进行一次检查</p>
+                            </div>
                         </div>
                     `;
+                    
+                    // 更新本地化文本
+                    document.querySelectorAll('[data-i18n]').forEach(element => {
+                        const message = element.getAttribute('data-i18n');
+                        const localizedText = chrome.i18n.getMessage(message);
+                        if (localizedText) {
+                            element.textContent = localizedText;
+                        }
+                    });
+
+                    // 触发撒花效果
+                    createConfetti();
                 }
             }
             
@@ -462,7 +497,7 @@ async function scanBookmarks(node, path = [], counter = { count: 0, total: 0, sh
         }
         
         if (node.children) {
-            const currentPath = [...path, node.title];
+            const currentPath = [...path, node.title || getMessage('untitledFolder')];
             let hasBookmarks = false;
             let hasBookmarksInSubfolders = false;
             let bookmarksToCheck = [];
@@ -470,9 +505,10 @@ async function scanBookmarks(node, path = [], counter = { count: 0, total: 0, sh
             // 遍历子节点，收集需要检查的书签
             for (const child of node.children) {
                 if (child.url) {
-                    // 只有当 URL 不在有效协议列表中时才添加到检查列表
+                    // 任何书签都应该将 hasBookmarks 设为 true
+                    hasBookmarks = true;
+                    // 只有需要检查的书签才加入检查列表
                     if (!CONFIG.validProtocols.some(protocol => child.url.startsWith(protocol))) {
-                        hasBookmarks = true;
                         bookmarksToCheck.push({
                             id: child.id,
                             title: child.title,
@@ -779,18 +815,50 @@ function updateStats() {
 // 修改显示结果的函数
 function displayResults() {
     const invalidList = document.getElementById('invalidList');
-    if (!invalidList) return;
+    if (!invalidList) {
+        console.error('Invalid list container not found in displayResults');
+        return;
+    }
+    
+    console.log('Display Results:', {
+        invalidBookmarksLength: invalidBookmarks.length,
+        emptyFoldersLength: emptyFolders.length
+    });
     
     // 清空现有列表
     invalidList.innerHTML = '';
     
-    // 如果没有无效书签和空文件夹，显示成功消息
+    // 如果没有无效书签和空文件夹，显示成功消息并触发撒花
     if (invalidBookmarks.length === 0 && emptyFolders.length === 0) {
+        console.log('No invalid bookmarks or empty folders, showing success state');
+        
         invalidList.innerHTML = `
-            <div class="result-item">
-                <div style="color: #34C759">${chrome.i18n.getMessage('allValid')}</div>
+            <div class="success-state">
+                <div class="success-icon">
+                    <img src="images/icon128.png" alt="Happy Cat" class="cat-icon">
+                    <div class="success-badge">✓</div>
+                </div>
+                <div class="success-message">
+                    <h3 data-i18n="scanCompleteTitle">书签状态良好！</h3>
+                    <p data-i18n="scanCompleteDesc">暂时没有发现失效的书签，也没有发现空文件夹哟</p>
+                </div>
+                <div class="success-tips">
+                    <p data-i18n="nextScanTip">建议每隔 1-2 个月进行一次检查</p>
+                </div>
             </div>
         `;
+        
+        // 更新本地化文本
+        document.querySelectorAll('[data-i18n]').forEach(element => {
+            const message = element.getAttribute('data-i18n');
+            const localizedText = chrome.i18n.getMessage(message);
+            if (localizedText) {
+                element.textContent = localizedText;
+            }
+        });
+
+        console.log('Triggering confetti effect');
+        createConfetti();
         return;
     }
 
@@ -1038,17 +1106,50 @@ function initBatchActions() {
                 }
                 showToast(message);
                 
+                // 清除选中状态
                 selectedBookmarks.clear();
                 
-                // 如果没有更多项目，隐藏批量操作按钮
+                // 如果删除后没有更多项目，显示成功状态并触发撒花
                 const remainingItems = document.querySelectorAll('.result-item');
                 if (remainingItems.length === 0) {
-                    document.querySelector('.batch-actions').style.display = 'none';
+                    const invalidList = document.getElementById('invalidList');
+                    invalidList.innerHTML = `
+                        <div class="success-state">
+                            <div class="success-icon">
+                                <img src="images/icon128.png" alt="Happy Cat" class="cat-icon">
+                                <div class="success-badge">✓</div>
+                            </div>
+                            <div class="success-message">
+                                <h3 data-i18n="scanCompleteTitle">书签状态良好！</h3>
+                                <p data-i18n="scanCompleteDesc">暂时没有发现失效的书签，也没有发现空文件夹哟</p>
+                            </div>
+                            <div class="success-tips">
+                                <p data-i18n="nextScanTip">建议每隔 1-2 个月进行一次检查</p>
+                            </div>
+                        </div>
+                    `;
+                    
+                    // 更新本地化文本
+                    document.querySelectorAll('[data-i18n]').forEach(element => {
+                        const message = element.getAttribute('data-i18n');
+                        const localizedText = chrome.i18n.getMessage(message);
+                        if (localizedText) {
+                            element.textContent = localizedText;
+                        }
+                    });
+
+                    // 触发撒花效果
+                    createConfetti();
+                } else {
+                    // 即使还有剩余项目，也触发撒花来庆祝删除成功
+                    createConfetti();
                 }
-                
-                // 更新按钮状态
-                updateDeleteButtonState();
-                updateSelectAllButtonState();
+
+                // 如果没有更多项目，隐藏批量操作按钮
+                const batchActions = document.querySelector('.batch-actions');
+                if (remainingItems.length === 0 && batchActions) {
+                    batchActions.style.display = 'none';
+                }
                 
             } catch (error) {
                 console.error('Error deleting bookmarks:', error);
@@ -1613,3 +1714,4 @@ function showToast(message) {
         }, 300);
     }, 2000);
 }
+

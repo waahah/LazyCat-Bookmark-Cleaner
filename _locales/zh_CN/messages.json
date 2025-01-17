@@ -652,6 +652,21 @@
   },
   "cancelSelection": {
     "message": "取消选择"
+  },
+  "scanCompleteTitle": {
+    "message": "书签状态良好！"
+  },
+  "scanCompleteDesc": {
+    "message": "暂时没有发现失效的书签，也没有发现空文件夹哟"
+  },
+  "nextScanTip": {
+    "message": "建议每隔 1-2 个月进行一次检查"
+  },
+  "noDuplicatesTitle": {
+    "message": "未发现重复书签！"
+  },
+  "noDuplicatesDesc": {
+    "message": "暂时没有发现重复的书签，继续保持哦"
   }
 }
 

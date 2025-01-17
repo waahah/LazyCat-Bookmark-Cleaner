@@ -1667,33 +1667,43 @@ h1 {
     top: 0;
     left: 0;
     width: 100%;
-    height: 100%;
+    height: 100vh;
     pointer-events: none;
     z-index: 9999;
+    overflow: hidden;
 }
 
 /* 单个撒花的基础样式 */
 .confetti {
     position: absolute;
-    width: 10px;
-    height: 10px;
-    background-color: #007AFF;
+    border-radius: 2px;
     opacity: 0;
+    transform-origin: center;
 }
 
-/* 撒花动画 */
-@keyframes confetti-fall {
+/* 烟花爆开动画 */
+@keyframes confetti-explosion {
     0% {
-        transform: translateY(-100%) rotate(0deg);
+        transform: translate(-50%, -50%) scale(0.1);
+        opacity: 0;
+    }
+
+    10% {
+        opacity: 1;
+    }
+
+    35% {
+        transform: translate(calc(-50% + var(--spread-x)),
+                calc(-50% + var(--spread-y))) scale(1);
         opacity: 1;
     }
 
     100% {
-        transform: translateY(100vh) rotate(360deg);
+        transform: translate(calc(-50% + var(--spread-x)),
+                calc(-50% + var(--spread-y))) scale(0.5);
         opacity: 0;
     }
 }
-
 /* 响应式设计 */
 @media (max-width: 768px) {
     .scan-stats-wrapper {
@@ -2546,7 +2556,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
 .no-duplicates {
     text-align: center;
     padding: 48px 0;
-    color: #10b981;
+    color: #1d1d1f;
     font-size: 16px;
     font-weight: 500;
 }
@@ -2627,4 +2637,64 @@ input[type="range"]::-webkit-slider-thumb:hover {
     opacity: 0.8;
     margin-left: 4px;
     font-weight: normal;
+}
+.success-state {
+    text-align: center;
+    padding: 40px 20px;
+    background: var(--card-background);
+    border-radius: 12px;
+    margin: 20px 0;
+}
+
+.success-icon {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 20px;
+}
+
+.cat-icon {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+}
+
+.success-badge {
+    position: absolute;
+    bottom: -5px;
+    right: -5px;
+    width: 32px;
+    height: 32px;
+    background: #34C759;
+    border-radius: 50%;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    border: 3px solid var(--card-background);
+}
+
+.success-message h3 {
+    color: var(--text-primary);
+    font-size: 24px;
+    margin-bottom: 8px;
+}
+
+.success-message p {
+    color: var(--text-secondary);
+    font-size: 16px;
+    margin-bottom: 24px;
+}
+
+.success-tips {
+    margin-top: 24px;
+    padding: 16px;
+    background: var(--background-secondary);
+    border-radius: 8px;
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+.success-tips p {
+    margin: 0;
 }

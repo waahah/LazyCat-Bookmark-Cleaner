@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <div class="confetti-container"></div>
+    
     <div class="app-header">
         <nav class="nav-tabs">
             <div class="brand">
@@ -69,8 +71,19 @@
 
         <div class="results-container">
             <div class="no-duplicates" style="display: none;">
-                <span class="success-icon">✓</span>
-                <span data-i18n="noDuplicates">未发现重复书签</span>
+                <div class="success-state">
+                    <div class="success-icon">
+                        <img src="images/icon128.png" alt="Happy Cat" class="cat-icon">
+                        <div class="success-badge">✓</div>
+                    </div>
+                    <div class="success-message">
+                        <h3 data-i18n="noDuplicatesTitle">未发现重复书签！</h3>
+                        <p data-i18n="noDuplicatesDesc">暂时没有发现重复的书签，继续保持哦</p>
+                    </div>
+                    <div class="success-tips">
+                        <p data-i18n="nextScanTip">建议每隔 1-2 个月进行一次检查</p>
+                    </div>
+                </div>
             </div>
             
             <div class="duplicate-groups">
@@ -123,6 +136,7 @@
     </div>
 
     <script type="module" src="duplicates.js"></script>
+    <script type="module" src="confetti.js"></script>
     <script src="preview.js"></script>
     <script type="module" src="index.js"></script>
     <script type="module" src="bookmarkProfile.js"></script>

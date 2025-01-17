@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "__MSG_extName__",
-  "version": "1.44",
+  "version": "1.45",
   "description": "__MSG_extDescription__",
   "default_locale": "zh_CN",
   "permissions": [
@@ -33,7 +33,17 @@
     "32": "images/icon32.png"
   },
   "web_accessible_resources": [{
-    "resources": ["index.html", "profile.html"],
+    "resources": [
+      "index.html", 
+      "profile.html",
+      "confetti.js",
+      "duplicate.js",
+      "bookmarkProfile.js",
+      "preview.js",
+      "settings.js",
+      "index.js",
+      "duplicate.html"
+    ],
     "matches": ["<all_urls>"]
   }]
 }

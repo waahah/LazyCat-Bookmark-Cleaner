@@ -686,5 +686,23 @@
   },
   "cancelSelection": {
     "message": "Cancel Selection"
+  },
+  "scanCompleteTitle": {
+    "message": "Bookmarks are in good condition!"
+  },
+  "scanCompleteDesc": {
+    "message": "No invalid bookmarks or empty folders found"
+  },
+  "nextScanTip": {
+    "message": "Recommended to check every 1-2 months"
+  },
+  "noDuplicatesTitle": {
+    "message": "No duplicate bookmarks found!"
+  },
+  "noDuplicatesDesc": {
+    "message": "No duplicate bookmarks found, keep it up!"
+  },
+  "nextScanTip": {
+    "message": "Recommended to check every 1-2 months"
   }
 }

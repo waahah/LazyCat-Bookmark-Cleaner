@@ -39,6 +39,9 @@
     </div>
 
     <div class="container">
+        <div class="confetti-container">
+            <!-- 撒花元素会通过 JavaScript 动态生成 -->
+        </div>
         <div class="scan-stats-wrapper">
             <div class="progress-ring-container">
                 <svg class="progress-ring" width="160" height="160">
@@ -171,8 +174,11 @@
                 </div>
             </div>
         </div>
+
+        <div id="invalidList" class="results"></div>
     </div>
     <script type="module" src="settings.js"></script>
+    <script type="module" src="confetti.js"></script>
     <script type="module" src="index.js"></script>
     <script src="preview.js"></script>
     <script type="module" src="bookmarkProfile.js"></script>
