@@ -1,53 +1,50 @@
-# 懒猫书签清理 - 你的书签整理助手 🐱
+# LazyCat Bookmark Cleaner - Your Bookmark Organization Assistant 🐱
+Project Website: https://www.ainewtab.app/LazyCat-Bookmark-Cleaner/en/
 
-[English](README_EN.md) | [简体中文](README.md)
+[English](README.md) | [简体中文](README_zh-CN.md)
 
-项目网站：https://www.ainewtab.app/LazyCat-Bookmark-Cleaner/zh-cn/
-
-让书签管理变得轻松愉快！一只可爱的懒猫助手，帮你智能清理和整理浏览器书签。
+Make bookmark management easy and enjoyable! A cute lazy cat assistant helps you intelligently clean and organize your browser bookmarks.
 
 <img width="1663" alt="Snipaste_2024-12-28_16-54-01" src="https://github.com/user-attachments/assets/af528efe-a4e4-484d-882c-e131d97e84c2" />
 
 <img width="1661" alt="Snipaste_2024-12-28_16-55-16" src="https://github.com/user-attachments/assets/d1283d33-000a-4a58-8e19-53df56ae4de5" />
 
+## ✨ Core Features
 
+### 🧹 Smart Bookmark Cleaning
+- Automatically detect invalid bookmarks, duplicate bookmarks, and empty folders
+- Batch cleaning function, restore tidiness with one click
+- Support multiple error type detection and classification
+- Preview before cleaning, safe and controllable
 
-## ✨ 核心功能
+### 📊 Generate Bookmark Profile
+- Generate unique bookmark usage reports
+- Visualize your collection preferences
+- Discover your treasured web collections
+- Understand your browsing habits
 
-### 🧹 智能书签清理
-- 自动检测失效链接和空文件夹
-- 批量清理功能，一键恢复整洁
-- 支持多种错误类型识别和分类
-- 清理前可预览，安全可控
+### 🛡️ Privacy Protection
+- 100% local operation, no internet connection needed
+- No collection of personal data
+- No uploading of bookmark information
+- Fully open source, trustworthy
 
-### 📊 生成书签画像
-- 生成独特的书签使用报告
-- 可视化展示你的收藏偏好
-- 发现珍藏的网络宝藏
-- 了解自己的浏览习惯
+## 🌟 Highlights
+- Cute cat assistant accompanies the organization process
+- Clean and elegant interface design
+- Supports both English and Chinese interfaces
+- Real-time progress display, transparent operation
 
-### 🛡️ 隐私保护
-- 100% 本地运行，无需联网
-- 不收集任何个人数据
-- 不上传任何书签信息
-- 完全开源，值得信赖
+## ⚠️ Friendly Reminder
+Deleted bookmarks cannot be automatically recovered, suggestions:
+- Confirm bookmark status before deletion
+- Backup important bookmarks first
+- Organize in batches
 
-## 🌟 特色亮点
-- 可爱的猫咪助手陪伴整理过程
-- 简洁优雅的界面设计
-- 支持中英文双语界面
-- 实时进度展示，操作透明
+## 🎯 Suitable For
+- Bookmark collection enthusiasts
+- Digital organization lovers
+- Browser cleanup specialists
+- Efficiency tool enthusiasts
 
-## ⚠️ 温馨提示
-删除的书签无法自动恢复，建议：
-- 删除前确认书签状态
-- 重要书签可先做备份
-- 分批次进行整理
-
-## 🎯 适合人群
-- 书签收藏达人
-- 数字整理控
-- 浏览器清洁工
-- 效率工具爱好者
-
-立即开始整理，让你的书签焕然一新！ ✨
+Start organizing now and give your bookmarks a fresh new look! ✨ 
