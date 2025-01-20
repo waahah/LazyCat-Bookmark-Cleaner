@@ -5,9 +5,11 @@ Project Website: https://www.ainewtab.app/LazyCat-Bookmark-Cleaner/en/
 
 Make bookmark management easy and enjoyable! A cute lazy cat assistant helps you intelligently clean and organize your browser bookmarks.
 
-<img width="1663" alt="Snipaste_2024-12-28_16-54-01" src="https://github.com/user-attachments/assets/af528efe-a4e4-484d-882c-e131d97e84c2" />
+![](https://raw.githubusercontent.com/Alanrk/blogimg/main/Snipaste_2025-01-15_14-50-04.png)
 
-<img width="1661" alt="Snipaste_2024-12-28_16-55-16" src="https://github.com/user-attachments/assets/d1283d33-000a-4a58-8e19-53df56ae4de5" />
+![](https://raw.githubusercontent.com/Alanrk/blogimg/main/Snipaste_2025-01-15_14-52-53.png)
+
+![](https://raw.githubusercontent.com/Alanrk/blogimg/main/Snipaste_2025-01-15_14-53-34.png)
 
 ## ✨ Core Features
 

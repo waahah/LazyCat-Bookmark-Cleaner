@@ -6,10 +6,11 @@
 
 让书签管理变得轻松愉快！一只可爱的懒猫助手，帮你智能清理和整理浏览器书签。
 
-<img width="1663" alt="Snipaste_2024-12-28_16-54-01" src="https://github.com/user-attachments/assets/af528efe-a4e4-484d-882c-e131d97e84c2" />
+![](https://raw.githubusercontent.com/Alanrk/blogimg/main/Snipaste_2025-01-15_15-00-14.png)
 
-<img width="1661" alt="Snipaste_2024-12-28_16-55-16" src="https://github.com/user-attachments/assets/d1283d33-000a-4a58-8e19-53df56ae4de5" />
+![](https://raw.githubusercontent.com/Alanrk/blogimg/main/Snipaste_2025-01-15_15-00-29.png)
 
+![](https://raw.githubusercontent.com/Alanrk/blogimg/main/Snipaste_2025-01-15_15-00-46.png)
 
 
 ## ✨ 核心功能
