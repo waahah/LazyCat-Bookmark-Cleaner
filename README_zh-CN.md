@@ -52,3 +52,23 @@
 - 效率工具爱好者
 
 立即开始整理，让你的书签焕然一新！ ✨
+
+### 反馈建议
+
+**微信交流群**
+
+<img src="https://raw.githubusercontent.com/Alanrk/blogimg/main/IMG_4251.JPG" width="300px" />
+
+**赞赏码**
+
+如果你觉得这个项目对你有帮助，可以请我喝杯咖啡~
+
+<img src="https://raw.githubusercontent.com/Alanrk/blogimg/main/IMG_4250.JPG" width="300px" />
+
+**邮箱**
+
+邮箱：hello@ainewtab.app
+
+## 📄 开源许可
+
+本项目采用 MIT 许可证 - 查看 [LICENSE](LICENSE) 文件了解详情。

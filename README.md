@@ -50,3 +50,23 @@ Deleted bookmarks cannot be automatically recovered, suggestions:
 - Efficiency tool enthusiasts
 
 Start organizing now and give your bookmarks a fresh new look! ✨ 
+
+### Feedback and Suggestions
+
+**WeChat Group**
+
+<img src="https://raw.githubusercontent.com/Alanrk/blogimg/main/IMG_4251.JPG" width="300px" />
+
+**Donation Code**
+
+If you think this project is helpful to you, you can buy me a cup of coffee~
+
+<img src="https://raw.githubusercontent.com/Alanrk/blogimg/main/IMG_4250.JPG" width="300px" />
+
+**Email**
+
+Email: hello@ainewtab.app
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
