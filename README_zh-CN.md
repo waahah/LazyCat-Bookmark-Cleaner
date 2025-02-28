@@ -57,7 +57,7 @@
 
 **微信交流群**
 
-<img src="https://raw.githubusercontent.com/Alanrk/blogimg/main/IMG_4251.JPG" width="300px" />
+<img src="https://raw.githubusercontent.com/Alanrk/blogimg/main/IMG_4351.jpg" width="300px" />
 
 **赞赏码**
 
