@@ -71,3 +71,5 @@ Email: hello@ainewtab.app
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+<a href="https://hellogithub.com/repository/e23c6940ba3649e18e4db21f6932c27d" target="_blank"><img src="https://api.hellogithub.com/v1/widgets/recommend.svg?rid=e23c6940ba3649e18e4db21f6932c27d&claim_uid=dmoPOiAHphDenWr&theme=small" alt="Featured｜HelloGitHub" /></a>

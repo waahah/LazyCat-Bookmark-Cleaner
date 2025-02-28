@@ -72,3 +72,5 @@
 ## 📄 开源许可
 
 本项目采用 MIT 许可证 - 查看 [LICENSE](LICENSE) 文件了解详情。
+
+<a href="https://hellogithub.com/repository/e23c6940ba3649e18e4db21f6932c27d" target="_blank"><img src="https://api.hellogithub.com/v1/widgets/recommend.svg?rid=e23c6940ba3649e18e4db21f6932c27d&claim_uid=dmoPOiAHphDenWr&theme=small" alt="Featured｜HelloGitHub" /></a>
