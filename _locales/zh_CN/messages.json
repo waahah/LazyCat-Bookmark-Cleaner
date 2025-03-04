@@ -632,7 +632,7 @@
     "message": "未知时间"
   },
   "aboutAuthor": {
-    "message": "关于"
+    "message": "赞赏支持"
   },
   "deleteSuccessBookmarks": {
     "message": "成功删除 $1 个失效书签",

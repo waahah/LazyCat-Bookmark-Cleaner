@@ -666,7 +666,7 @@
     "message": "Unknown time"
   },
   "aboutAuthor": {
-    "message": "About"
+    "message": "Support"
   },
   "deleteSuccessBookmarks": {
     "message": "Successfully deleted $1 invalid bookmarks",

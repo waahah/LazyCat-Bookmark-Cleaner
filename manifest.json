@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "__MSG_extName__",
-  "version": "1.45",
+  "version": "1.46",
   "description": "__MSG_extDescription__",
   "default_locale": "zh_CN",
   "permissions": [
@@ -37,12 +37,12 @@
       "index.html", 
       "profile.html",
       "confetti.js",
-      "duplicate.js",
+      "duplicates.js",
       "bookmarkProfile.js",
       "preview.js",
       "settings.js",
       "index.js",
-      "duplicate.html"
+      "duplicates.html"
     ],
     "matches": ["<all_urls>"]
   }]
